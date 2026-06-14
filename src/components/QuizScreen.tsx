@@ -2,6 +2,25 @@ import { useState } from 'react';
 import type { Question } from '../types';
 import { extractVerbHints } from '../lib/parseExp';
 
+function FullTextDisplay({ text }: { text: string }) {
+  const parts = text.split(/(\(\([^)]+\)\))/g);
+  return (
+    <span>
+      {parts.map((part, i) => {
+        const match = part.match(/^\(\(([^)]+)\)\)$/);
+        if (match) {
+          return (
+            <span key={i} className="font-bold text-zinc-900 dark:text-zinc-100">
+              ({match[1]})
+            </span>
+          );
+        }
+        return <span key={i}>{part}</span>;
+      })}
+    </span>
+  );
+}
+
 function FillSentence({ spanish, blanks }: { spanish: string; blanks: string[] }) {
   const parts = spanish.split('(___)');
   return (
@@ -29,13 +48,14 @@ interface Props {
   onHome: () => void;
   showHint: boolean;
   verbHintAlwaysOpen: boolean;
+  lastResult: 'correct' | 'wrong' | 'skip' | null;
 }
 
-export default function QuizScreen({ question, sessionIndex, sessionTotal, onResult, onHome, showHint, verbHintAlwaysOpen }: Props) {
+export default function QuizScreen({ question, sessionIndex, sessionTotal, onResult, onHome, showHint, verbHintAlwaysOpen, lastResult }: Props) {
   const [revealed, setReveal] = useState(false);
   const verbHints = extractVerbHints(question.exp ?? '');
   const [verbHintOpen, setVerbHintOpen] = useState(verbHintAlwaysOpen && verbHints.length > 0);
-  const progress = sessionIndex / Math.max(sessionTotal, 1);
+  const progress = sessionTotal > 0 ? sessionIndex / sessionTotal : 0;
   const jaLen = question.ja.length;
   const questionTextSize = jaLen < 18 ? 'text-3xl' : jaLen < 30 ? 'text-2xl' : 'text-xl';
 
@@ -44,7 +64,7 @@ export default function QuizScreen({ question, sessionIndex, sessionTotal, onRes
       {/* Progress bar */}
       <div className="h-1 bg-zinc-100 dark:bg-zinc-900 w-full">
         <div
-          className="h-full bg-red-500 transition-all duration-500"
+          className={`h-full transition-all duration-500 ${lastResult === 'correct' ? 'bg-blue-500' : 'bg-red-500'}`}
           style={{ width: `${progress * 100}%` }}
         />
       </div>
@@ -57,7 +77,7 @@ export default function QuizScreen({ question, sessionIndex, sessionTotal, onRes
         >
           ← ホーム
         </button>
-        <span className="text-xs text-zinc-400 tabular-nums">{sessionIndex} / {sessionTotal}</span>
+        <span className="text-xs text-zinc-400 tabular-nums">{sessionIndex} / {sessionTotal === 0 ? '∞' : sessionTotal}</span>
         <span className="flex items-center gap-1.5 text-xs text-zinc-400 dark:text-zinc-500">
           <span>{question.chapter} L{question.lesson}</span>
           {question.theme && (
@@ -80,7 +100,7 @@ export default function QuizScreen({ question, sessionIndex, sessionTotal, onRes
         </p>
 
         {/* Verb hint (collapsible) */}
-        {verbHints.length > 0 && !revealed && (
+        {verbHints.length > 0 && (
           <div className="mb-4">
             <button
               onClick={() => setVerbHintOpen(o => !o)}
@@ -127,7 +147,7 @@ export default function QuizScreen({ question, sessionIndex, sessionTotal, onRes
       <div className="px-5 pb-8 space-y-3">
         {!revealed ? (
           <button
-            onClick={() => setReveal(true)}
+            onClick={() => { setReveal(true); if (verbHints.length > 0) setVerbHintOpen(true); }}
             className="w-full h-14 bg-zinc-900 dark:bg-zinc-100 hover:bg-zinc-800 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 rounded-lg text-base font-bold transition-colors shadow-sm active:shadow-none active:translate-y-px"
           >
             答えを見る
@@ -151,7 +171,9 @@ export default function QuizScreen({ question, sessionIndex, sessionTotal, onRes
                 </div>
               )}
               {question.type === 'fill' && question.fullText && (
-                <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-2">{question.fullText}</p>
+                <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-2">
+                  <FullTextDisplay text={question.fullText} />
+                </p>
               )}
               {question.type === 'compose' && question.answer && (
                 <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">{question.answer}</p>

@@ -15,11 +15,12 @@ export default function App() {
   const [screen, setScreen] = useState<Screen>('home');
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const [sessionIndex, setSessionIndex] = useState(0);
-  const sessionTotal = 20;
+  const [sessionTotal, setSessionTotal] = useState(20);
   const recentIds = useRef<string[]>([]);
   const pool = useRef<Question[]>(ALL_QUESTIONS);
   const [showHint, setShowHint] = useState(() => localStorage.getItem('spanish_show_hint') !== 'false');
   const [verbHintAlwaysOpen, setVerbHintAlwaysOpen] = useState(() => localStorage.getItem('spanish_verb_hint_always_open') !== 'false');
+  const [lastResult, setLastResult] = useState<'correct' | 'wrong' | 'skip' | null>(null);
 
   function toggleHint() {
     setShowHint(h => {
@@ -57,6 +58,7 @@ export default function App() {
 
     pool.current = filtered;
     setSessionIndex(0);
+    setSessionTotal(f.count ?? 20);
 
     const history = getAllHistory();
     const q = selectNext(filtered, history, []);
@@ -77,7 +79,13 @@ export default function App() {
       recordResult(currentQuestion.id, result);
     }
     recentIds.current = [...recentIds.current, currentQuestion.id];
-    setSessionIndex((i) => i + 1);
+    setLastResult(result);
+    const newIndex = sessionIndex + 1;
+    setSessionIndex(newIndex);
+    if (sessionTotal > 0 && newIndex >= sessionTotal) {
+      setScreen('home');
+      return;
+    }
     pickNext();
   }
 
@@ -115,6 +123,7 @@ export default function App() {
         onHome={() => setScreen('home')}
         showHint={showHint}
         verbHintAlwaysOpen={verbHintAlwaysOpen}
+        lastResult={lastResult}
       />
     );
   }

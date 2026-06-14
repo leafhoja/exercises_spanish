@@ -44,4 +44,5 @@ export interface QuizFilter {
   chapter?: string;
   lesson?: number;
   theme?: string;
+  count?: number; // 0 = unlimited
 }

@@ -17,11 +17,14 @@ const CHAPTER_LESSONS: Record<string, number[]> = {
   '2列': [1, 2, 3, 4, 5, 6],
 };
 
+const COUNT_OPTIONS = [10, 20, 30, 50, 0] as const;
+
 export default function HomeScreen({ questions, onStart, onStats, showHint, onToggleHint, verbHintAlwaysOpen, onToggleVerbHintAlwaysOpen }: Props) {
   const [mode, setMode] = useState<'adaptive' | 'chapter' | 'theme'>('adaptive');
   const [selectedChapter, setSelectedChapter] = useState<string>('');
   const [selectedLesson, setSelectedLesson] = useState<number | null>(null);
   const [selectedTheme, setSelectedTheme] = useState<string>('');
+  const [questionCount, setQuestionCount] = useState<number>(20);
 
   const today = getTodayStats();
   const history = getAllHistory();
@@ -35,7 +38,7 @@ export default function HomeScreen({ questions, onStart, onStats, showHint, onTo
     .slice(0, 3);
 
   function handleStart() {
-    const filter: QuizFilter = { mode };
+    const filter: QuizFilter = { mode, count: questionCount };
     if (mode === 'chapter') {
       if (!selectedChapter) return;
       filter.chapter = selectedChapter;
@@ -197,6 +200,25 @@ export default function HomeScreen({ questions, onStart, onStats, showHint, onTo
 
       {/* Start button + hint toggles */}
       <div className="mt-auto px-5 pb-8 pt-4">
+        {/* Question count */}
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-sm text-zinc-600 dark:text-zinc-400">問題数</span>
+          <div className="flex gap-1.5">
+            {COUNT_OPTIONS.map((n) => (
+              <button
+                key={n}
+                onClick={() => setQuestionCount(n)}
+                className={`h-8 px-3 rounded text-xs font-semibold transition-colors ${
+                  questionCount === n
+                    ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900'
+                    : 'border border-zinc-300 dark:border-zinc-600 text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:bg-zinc-50 dark:hover:border-zinc-500 dark:hover:bg-zinc-800'
+                }`}
+              >
+                {n === 0 ? '∞' : n}
+              </button>
+            ))}
+          </div>
+        </div>
         <div className="flex items-center justify-between mb-2.5">
           <span className="text-sm text-zinc-600 dark:text-zinc-400">穴埋めヒント</span>
           <button
