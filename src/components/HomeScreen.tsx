@@ -22,25 +22,14 @@ export default function HomeScreen({ questions, onStart, onStats }: Props) {
   const today = getTodayStats();
   const history = getAllHistory();
 
-  // Themes from available questions
   const themes = [...new Set(questions.map((q) => q.theme))].filter(Boolean);
 
-  // Worst 3 by error rate
   const worst3 = questions
     .map((q) => ({ q, h: history[q.id] }))
     .filter(({ h }) => h && h.totalAttempts >= 2)
     .map(({ q, h }) => ({ q, rate: h!.wrongCount / h!.totalAttempts }))
     .sort((a, b) => b.rate - a.rate)
     .slice(0, 3);
-
-  // Available lessons for selected chapter
-  const availableLessons = selectedChapter
-    ? questions
-        .filter((q) => q.chapter === selectedChapter)
-        .map((q) => q.lesson)
-        .filter((v, i, a) => a.indexOf(v) === i)
-        .sort((a, b) => a - b)
-    : [];
 
   function handleStart() {
     const filter: QuizFilter = { mode };
@@ -60,167 +49,165 @@ export default function HomeScreen({ questions, onStart, onStats }: Props) {
     (mode === 'chapter' && selectedChapter !== '') ||
     (mode === 'theme' && selectedTheme !== '');
 
+  const correctRate =
+    today.count > 0 ? Math.round((today.correct / today.count) * 100) : null;
+
   return (
-    <div className="min-h-screen p-4 max-w-lg mx-auto flex flex-col gap-4">
-      <div className="text-center pt-4 pb-2">
-        <h1 className="text-3xl font-bold text-blue-700 dark:text-blue-400">🇪🇸 スペイン語クイズ</h1>
+    <div className="min-h-screen max-w-lg mx-auto flex flex-col">
+      {/* Top bar */}
+      <div className="flex items-center justify-between px-5 pt-8 pb-6">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
+            スペイン語
+          </h1>
+          <p className="text-sm text-gray-400 dark:text-gray-500 mt-0.5">全{questions.length}問</p>
+        </div>
+        <button
+          onClick={onStats}
+          className="text-sm font-medium text-indigo-600 dark:text-indigo-400 px-3 py-1.5 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors"
+        >
+          統計
+        </button>
       </div>
 
-      {/* Today stats */}
-      <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-sm border border-slate-200 dark:border-slate-700">
-        <div className="flex justify-between items-center mb-2">
-          <span className="text-sm font-medium text-slate-500 dark:text-slate-400">今日の記録</span>
-          <button
-            onClick={onStats}
-            className="text-sm text-blue-600 dark:text-blue-400 underline"
-          >
-            統計を見る
-          </button>
+      {/* Today's stats */}
+      <div className="mx-5 mb-6 flex gap-3">
+        <div className="flex-1 bg-gray-50 dark:bg-gray-900 rounded-xl px-4 py-3">
+          <div className="text-2xl font-bold text-gray-900 dark:text-gray-100 tabular-nums">
+            {today.count}
+          </div>
+          <div className="text-xs text-gray-400 mt-0.5">今日の問題</div>
         </div>
-        <div className="flex gap-6">
-          <div className="text-center">
-            <div className="text-2xl font-bold">{today.count}</div>
-            <div className="text-xs text-slate-500">問</div>
+        <div className="flex-1 bg-gray-50 dark:bg-gray-900 rounded-xl px-4 py-3">
+          <div className={`text-2xl font-bold tabular-nums ${
+            correctRate === null
+              ? 'text-gray-300 dark:text-gray-700'
+              : correctRate >= 70
+              ? 'text-emerald-600 dark:text-emerald-500'
+              : 'text-amber-600 dark:text-amber-500'
+          }`}>
+            {correctRate !== null ? `${correctRate}%` : '—'}
           </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-green-600">
-              {today.count > 0 ? Math.round((today.correct / today.count) * 100) : '-'}
-            </div>
-            <div className="text-xs text-slate-500">正答率%</div>
-          </div>
+          <div className="text-xs text-gray-400 mt-0.5">正答率</div>
         </div>
         {worst3.length > 0 && (
-          <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700">
-            <div className="text-xs text-slate-500 mb-1">苦手トップ3</div>
-            {worst3.map(({ q, rate }) => (
-              <div key={q.id} className="text-xs flex justify-between py-0.5">
-                <span className="text-slate-700 dark:text-slate-300 truncate flex-1 pr-2">
-                  {q.ja.slice(0, 24)}{q.ja.length > 24 ? '…' : ''}
-                </span>
-                <span className="text-red-500 shrink-0">{Math.round(rate * 100)}%誤</span>
-              </div>
-            ))}
+          <div className="flex-[2] bg-gray-50 dark:bg-gray-900 rounded-xl px-4 py-3">
+            <div className="text-xs text-gray-400 mb-1.5">苦手</div>
+            <div className="space-y-0.5">
+              {worst3.slice(0, 2).map(({ q, rate }) => (
+                <div key={q.id} className="flex items-center gap-2">
+                  <span className="text-red-500 text-xs font-semibold tabular-nums w-7 shrink-0">
+                    {Math.round(rate * 100)}%
+                  </span>
+                  <span className="text-xs text-gray-600 dark:text-gray-400 truncate">{q.ja}</span>
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
 
-      {/* Mode selection */}
-      <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 shadow-sm border border-slate-200 dark:border-slate-700">
-        <div className="text-sm font-medium text-slate-500 dark:text-slate-400 mb-3">モード</div>
-        <div className="grid grid-cols-3 gap-2">
+      {/* Mode tabs */}
+      <div className="mx-5 mb-5">
+        <div className="flex gap-1 bg-gray-100 dark:bg-gray-900 rounded-xl p-1">
           {(['adaptive', 'chapter', 'theme'] as const).map((m) => (
             <button
               key={m}
               onClick={() => setMode(m)}
-              className={`py-3 rounded-xl text-sm font-medium transition-colors ${
+              className={`flex-1 py-2 rounded-lg text-sm font-semibold transition-all ${
                 mode === m
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
+                  ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm'
+                  : 'text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
               }`}
             >
-              {m === 'adaptive' ? 'おまかせ' : m === 'chapter' ? '章を選ぶ' : 'テーマ'}
+              {m === 'adaptive' ? 'おまかせ' : m === 'chapter' ? '章別' : 'テーマ'}
             </button>
           ))}
         </div>
-
-        {/* Chapter selector */}
-        {mode === 'chapter' && (
-          <div className="mt-4 space-y-3">
-            <div className="text-sm text-slate-500 mb-2">章を選択</div>
-            {Object.entries(CHAPTER_LESSONS).map(([ch]) => (
-              <div key={ch}>
-                <div className="text-xs text-slate-400 mb-1">{ch}</div>
-                <div className="flex flex-wrap gap-2">
-                  {availableLessons.length > 0 || selectedChapter !== ch
-                    ? questions
-                        .filter((q) => q.chapter === ch)
-                        .map((q) => q.lesson)
-                        .filter((v, i, a) => a.indexOf(v) === i)
-                        .sort((a, b) => a - b)
-                        .map((lesson) => (
-                          <button
-                            key={`${ch}-${lesson}`}
-                            onClick={() => {
-                              setSelectedChapter(ch);
-                              setSelectedLesson(
-                                selectedChapter === ch && selectedLesson === lesson ? null : lesson
-                              );
-                            }}
-                            className={`min-w-[48px] h-12 rounded-xl text-sm font-medium transition-colors ${
-                              selectedChapter === ch && selectedLesson === lesson
-                                ? 'bg-blue-600 text-white'
-                                : selectedChapter === ch && selectedLesson === null
-                                ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200'
-                                : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
-                            }`}
-                          >
-                            {selectedChapter === ch && selectedLesson === null && (
-                              <span className="text-xs">全</span>
-                            )}
-                            L{lesson}
-                          </button>
-                        ))
-                    : null}
-                </div>
-              </div>
-            ))}
-            {/* Select all for a chapter */}
-            <div className="flex gap-2 mt-2">
-              {Object.keys(CHAPTER_LESSONS).map((ch) => (
-                <button
-                  key={`all-${ch}`}
-                  onClick={() => { setSelectedChapter(ch); setSelectedLesson(null); }}
-                  className={`flex-1 h-10 rounded-xl text-xs font-medium transition-colors ${
-                    selectedChapter === ch && selectedLesson === null
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400'
-                  }`}
-                >
-                  {ch}全て
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Theme selector */}
-        {mode === 'theme' && (
-          <div className="mt-4">
-            <div className="text-sm text-slate-500 mb-2">テーマを選択</div>
-            <div className="flex flex-wrap gap-2">
-              {themes.map((t) => (
-                <button
-                  key={t}
-                  onClick={() => setSelectedTheme(t)}
-                  className={`px-3 h-10 rounded-xl text-sm transition-colors ${
-                    selectedTheme === t
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
-                  }`}
-                >
-                  {t}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
 
-      {/* Start button */}
-      <button
-        disabled={!canStart}
-        onClick={handleStart}
-        className={`w-full h-16 rounded-2xl text-xl font-bold transition-colors ${
-          canStart
-            ? 'bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white'
-            : 'bg-slate-200 dark:bg-slate-700 text-slate-400 dark:text-slate-500'
-        }`}
-      >
-        スタート
-      </button>
+      {/* Chapter selector */}
+      {mode === 'chapter' && (
+        <div className="mx-5 mb-5 space-y-4">
+          {Object.entries(CHAPTER_LESSONS).map(([ch]) => (
+            <div key={ch}>
+              <div className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2">
+                {ch}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => { setSelectedChapter(ch); setSelectedLesson(null); }}
+                  className={`h-9 px-3 rounded-lg text-xs font-semibold transition-colors ${
+                    selectedChapter === ch && selectedLesson === null
+                      ? 'bg-indigo-600 text-white'
+                      : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+                  }`}
+                >
+                  全て
+                </button>
+                {questions
+                  .filter((q) => q.chapter === ch)
+                  .map((q) => q.lesson)
+                  .filter((v, i, a) => a.indexOf(v) === i)
+                  .sort((a, b) => a - b)
+                  .map((lesson) => (
+                    <button
+                      key={`${ch}-${lesson}`}
+                      onClick={() => {
+                        setSelectedChapter(ch);
+                        setSelectedLesson(
+                          selectedChapter === ch && selectedLesson === lesson ? null : lesson
+                        );
+                      }}
+                      className={`h-9 px-3 rounded-lg text-sm font-semibold transition-colors ${
+                        selectedChapter === ch && selectedLesson === lesson
+                          ? 'bg-indigo-600 text-white'
+                          : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+                      }`}
+                    >
+                      L{lesson}
+                    </button>
+                  ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
-      <div className="text-center text-xs text-slate-400 pb-4">
-        全{questions.length}問
+      {/* Theme selector */}
+      {mode === 'theme' && (
+        <div className="mx-5 mb-5">
+          <div className="flex flex-wrap gap-2">
+            {themes.map((t) => (
+              <button
+                key={t}
+                onClick={() => setSelectedTheme(t)}
+                className={`h-9 px-4 rounded-lg text-sm font-medium transition-colors ${
+                  selectedTheme === t
+                    ? 'bg-indigo-600 text-white'
+                    : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+                }`}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Start button */}
+      <div className="mt-auto mx-5 pb-8">
+        <button
+          disabled={!canStart}
+          onClick={handleStart}
+          className={`w-full h-14 rounded-xl text-base font-bold transition-all ${
+            canStart
+              ? 'bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white shadow-sm'
+              : 'bg-gray-100 dark:bg-gray-900 text-gray-300 dark:text-gray-700'
+          }`}
+        >
+          スタート
+        </button>
       </div>
     </div>
   );

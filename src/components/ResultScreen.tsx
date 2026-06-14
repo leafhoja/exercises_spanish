@@ -8,76 +8,82 @@ interface Props {
 }
 
 export default function ResultScreen({ question, result, onNext, onHome }: Props) {
+  const isCorrect = result === 'correct';
+
   return (
-    <div className="min-h-screen flex flex-col max-w-lg mx-auto p-4 gap-4">
-      {/* Result badge */}
-      <div className={`text-center py-4 rounded-2xl ${
-        result === 'correct'
-          ? 'bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700'
-          : 'bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700'
-      }`}>
-        <div className="text-4xl mb-1">{result === 'correct' ? '○' : '×'}</div>
-        <div className={`text-lg font-bold ${
-          result === 'correct'
-            ? 'text-green-700 dark:text-green-400'
-            : 'text-red-700 dark:text-red-400'
+    <div className="min-h-screen flex flex-col max-w-lg mx-auto">
+      {/* Result indicator — top stripe */}
+      <div className={`h-2 w-full ${isCorrect ? 'bg-emerald-500' : 'bg-red-500'}`} />
+
+      <div className="px-5 pt-6 pb-2">
+        <span className={`inline-flex items-center gap-2 text-sm font-bold px-3 py-1.5 rounded-lg ${
+          isCorrect
+            ? 'bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400'
+            : 'bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-400'
         }`}>
-          {result === 'correct' ? '正解！' : '不正解'}
+          {isCorrect ? '○ 正解' : '× 不正解'}
+        </span>
+      </div>
+
+      <div className="flex-1 flex flex-col px-5 py-4 gap-5">
+        {/* Question */}
+        <div>
+          <p className="text-xl font-bold text-gray-900 dark:text-gray-100 leading-snug">
+            {question.ja}
+          </p>
         </div>
-      </div>
 
-      {/* Question recap */}
-      <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-200 dark:border-slate-700">
-        <div className="text-xs text-slate-400 mb-1">問題</div>
-        <p className="text-base">{question.ja}</p>
-      </div>
-
-      {/* Answer */}
-      <div className="bg-amber-50 dark:bg-amber-900/30 rounded-2xl p-4 border border-amber-200 dark:border-amber-700">
-        <div className="text-xs text-amber-600 dark:text-amber-400 mb-2">解答</div>
-        {question.type === 'fill' && question.blanks && (
-          <>
-            <div className="flex flex-wrap gap-2 mb-2">
-              {question.blanks.map((b, i) => (
-                <span key={i} className="bg-amber-200 dark:bg-amber-800 text-amber-900 dark:text-amber-100 px-3 py-1 rounded-lg font-bold text-lg">
-                  {b}
-                </span>
-              ))}
-            </div>
-            {question.fullText && (
-              <p className="text-sm text-slate-600 dark:text-slate-400">{question.fullText}</p>
-            )}
-          </>
-        )}
-        {question.type === 'compose' && question.answer && (
-          <p className="text-lg font-semibold text-slate-800 dark:text-slate-200">{question.answer}</p>
-        )}
-      </div>
-
-      {/* Explanation */}
-      {question.exp && (
-        <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-200 dark:border-slate-700">
-          <div className="text-xs text-slate-400 mb-2">解説</div>
-          <div
-            className="exp-content text-sm leading-relaxed text-slate-700 dark:text-slate-300"
-            dangerouslySetInnerHTML={{ __html: question.exp }}
-          />
+        {/* Answer */}
+        <div className="p-4 bg-indigo-50 dark:bg-indigo-950 rounded-xl">
+          {question.type === 'fill' && question.blanks && (
+            <>
+              <div className="flex flex-wrap gap-2 mb-2">
+                {question.blanks.map((b, i) => (
+                  <span
+                    key={i}
+                    className="bg-indigo-600 text-white px-3 py-1 rounded-lg font-bold text-lg"
+                  >
+                    {b}
+                  </span>
+                ))}
+              </div>
+              {question.fullText && (
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">{question.fullText}</p>
+              )}
+            </>
+          )}
+          {question.type === 'compose' && question.answer && (
+            <p className="text-2xl font-bold text-gray-900 dark:text-gray-100">{question.answer}</p>
+          )}
         </div>
-      )}
+
+        {/* Explanation */}
+        {question.exp && (
+          <div className="text-sm leading-relaxed text-gray-600 dark:text-gray-400">
+            <p className="text-xs font-semibold text-gray-400 dark:text-gray-600 uppercase tracking-wider mb-2">
+              解説
+            </p>
+            <div
+              className="exp-content"
+              dangerouslySetInnerHTML={{ __html: question.exp }}
+            />
+          </div>
+        )}
+      </div>
 
       {/* Actions */}
-      <div className="flex gap-3 mt-auto pt-2">
+      <div className="px-5 pb-8 flex gap-3">
         <button
           onClick={onHome}
-          className="flex-none h-12 px-5 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-2xl font-medium text-sm transition-colors"
+          className="h-12 px-4 text-sm font-medium text-gray-400 dark:text-gray-600 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
         >
-          ホーム
+          ← ホーム
         </button>
         <button
           onClick={onNext}
-          className="flex-1 h-12 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white rounded-2xl font-semibold transition-colors"
+          className="flex-1 h-12 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white rounded-xl font-bold transition-colors"
         >
-          次の問題へ →
+          次の問題
         </button>
       </div>
     </div>
