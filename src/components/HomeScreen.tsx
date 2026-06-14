@@ -135,7 +135,7 @@ export default function HomeScreen({ questions, onStart, onStats, showHint, onTo
                   className={`h-8 px-3 rounded text-xs font-semibold transition-colors ${
                     selectedChapter === ch && selectedLesson === null
                       ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900'
-                      : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
+                      : 'border border-zinc-300 dark:border-zinc-600 text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:bg-zinc-50 dark:hover:border-zinc-500 dark:hover:bg-zinc-800'
                   }`}
                 >
                   全て
@@ -157,7 +157,7 @@ export default function HomeScreen({ questions, onStart, onStats, showHint, onTo
                       className={`h-8 px-3 rounded text-sm font-semibold transition-colors ${
                         selectedChapter === ch && selectedLesson === lesson
                           ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900'
-                          : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
+                          : 'border border-zinc-300 dark:border-zinc-600 text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:bg-zinc-50 dark:hover:border-zinc-500 dark:hover:bg-zinc-800'
                       }`}
                     >
                       L{lesson}
@@ -180,7 +180,7 @@ export default function HomeScreen({ questions, onStart, onStats, showHint, onTo
                 className={`h-8 px-3 rounded text-sm font-medium transition-colors ${
                   selectedTheme === t
                     ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900'
-                    : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
+                    : 'border border-zinc-300 dark:border-zinc-600 text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:bg-zinc-50 dark:hover:border-zinc-500 dark:hover:bg-zinc-800'
                 }`}
               >
                 {t}

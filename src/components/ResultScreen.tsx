@@ -64,7 +64,7 @@ export default function ResultScreen({ question, result, onNext, onHome }: Props
       <div className="px-5 pb-8 flex gap-3">
         <button
           onClick={onHome}
-          className="h-12 px-4 text-sm font-medium text-zinc-400 dark:text-zinc-600 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors"
+          className="h-12 px-4 text-sm font-semibold border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded-lg transition-colors"
         >
           ← ホーム
         </button>

@@ -108,6 +108,7 @@ export default function App() {
   if (screen === 'quiz' && currentQuestion) {
     return (
       <QuizScreen
+        key={currentQuestion.id}
         question={currentQuestion}
         sessionIndex={sessionIndex}
         sessionTotal={sessionTotal}

@@ -70,9 +70,9 @@ export default function StatsScreen({ questions, onHome }: Props) {
       <div className="flex items-center gap-3 px-5 pt-6 pb-4 border-b border-zinc-100 dark:border-zinc-900">
         <button
           onClick={onHome}
-          className="text-sm font-medium text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors"
+          className="text-sm font-semibold border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 px-3 py-1.5 rounded-lg transition-colors"
         >
-          ←
+          ← ホーム
         </button>
         <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">統計</h2>
       </div>
