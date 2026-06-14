@@ -20,6 +20,15 @@ export default function App() {
   const sessionTotal = 20;
   const recentIds = useRef<string[]>([]);
   const pool = useRef<Question[]>(ALL_QUESTIONS);
+  const [showHint, setShowHint] = useState(() => localStorage.getItem('spanish_show_hint') !== 'false');
+
+  function toggleHint() {
+    setShowHint(h => {
+      const next = !h;
+      localStorage.setItem('spanish_show_hint', String(next));
+      return next;
+    });
+  }
 
   const startQuiz = useCallback((f: QuizFilter) => {
     recentIds.current = [];
@@ -81,6 +90,8 @@ export default function App() {
         questions={ALL_QUESTIONS}
         onStart={startQuiz}
         onStats={() => setScreen('stats')}
+        showHint={showHint}
+        onToggleHint={toggleHint}
       />
     );
   }
@@ -101,6 +112,7 @@ export default function App() {
         sessionIndex={sessionIndex}
         sessionTotal={sessionTotal}
         onResult={handleResult}
+        showHint={showHint}
       />
     );
   }

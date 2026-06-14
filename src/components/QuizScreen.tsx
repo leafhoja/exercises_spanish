@@ -6,11 +6,14 @@ interface Props {
   sessionIndex: number;
   sessionTotal: number;
   onResult: (result: 'correct' | 'wrong' | 'skip') => void;
+  showHint: boolean;
 }
 
-export default function QuizScreen({ question, sessionIndex, sessionTotal, onResult }: Props) {
+export default function QuizScreen({ question, sessionIndex, sessionTotal, onResult, showHint }: Props) {
   const [revealed, setReveal] = useState(false);
   const progress = sessionIndex / Math.max(sessionTotal, 1);
+  const jaLen = question.ja.length;
+  const questionTextSize = jaLen < 18 ? 'text-3xl' : jaLen < 30 ? 'text-2xl' : 'text-xl';
 
   return (
     <div className="min-h-dvh flex flex-col max-w-lg mx-auto">
@@ -42,18 +45,21 @@ export default function QuizScreen({ question, sessionIndex, sessionTotal, onRes
 
       {/* Question */}
       <div className="flex-1 flex flex-col justify-center px-5 pb-4">
-        <p className="text-3xl font-bold leading-snug text-zinc-900 dark:text-zinc-100 mb-8">
+        <p className={`${questionTextSize} font-bold leading-snug text-zinc-900 dark:text-zinc-100 mb-8`}>
           {question.ja}
         </p>
 
         {/* Fill: Spanish sentence with blanks */}
-        {question.type === 'fill' && question.spanish && (
+        {question.type === 'fill' && question.spanish && showHint && !revealed && (
           <div className="mb-6 px-4 py-3 border border-zinc-200 dark:border-zinc-800 rounded-lg">
             <p className="text-xs text-zinc-400 mb-2 font-medium">空欄を埋めよ</p>
             <p className="text-xl font-semibold text-zinc-800 dark:text-zinc-200 tracking-wide">
               {question.spanish}
             </p>
           </div>
+        )}
+        {question.type === 'fill' && question.spanish && !showHint && !revealed && (
+          <p className="text-sm text-zinc-400 dark:text-zinc-600 mb-6">スペイン語文を構成せよ</p>
         )}
 
         {/* Compose hint */}
@@ -94,6 +100,14 @@ export default function QuizScreen({ question, sessionIndex, sessionTotal, onRes
                 <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">{question.answer}</p>
               )}
             </div>
+
+            {/* Explanation */}
+            {question.exp && (
+              <div className="px-4 py-3 border border-zinc-100 dark:border-zinc-800 rounded-lg bg-zinc-50 dark:bg-zinc-900/60">
+                <p className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-1.5">解説</p>
+                <div className="exp-content text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed" dangerouslySetInnerHTML={{ __html: question.exp }} />
+              </div>
+            )}
 
             {/* Verdict buttons */}
             <div className="grid grid-cols-2 gap-2">
