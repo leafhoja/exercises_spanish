@@ -53,53 +53,53 @@ export default function HomeScreen({ questions, onStart, onStats }: Props) {
     today.count > 0 ? Math.round((today.correct / today.count) * 100) : null;
 
   return (
-    <div className="min-h-screen max-w-lg mx-auto flex flex-col">
+    <div className="min-h-dvh max-w-lg mx-auto flex flex-col">
       {/* Top bar */}
-      <div className="flex items-center justify-between px-5 pt-8 pb-6">
+      <div className="flex items-center justify-between px-5 pt-5 pb-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
+          <h1 className="text-2xl font-bold tracking-tight text-stone-900 dark:text-stone-100">
             スペイン語
           </h1>
-          <p className="text-sm text-gray-400 dark:text-gray-500 mt-0.5">全{questions.length}問</p>
+          <p className="text-sm text-stone-400 dark:text-stone-500 mt-0.5">全{questions.length}問</p>
         </div>
         <button
           onClick={onStats}
-          className="text-sm font-medium text-indigo-600 dark:text-indigo-400 px-3 py-1.5 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-950 transition-colors"
+          className="text-sm font-medium text-stone-600 dark:text-stone-400 px-3 py-1.5 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-900 transition-colors"
         >
           統計
         </button>
       </div>
 
       {/* Today's stats */}
-      <div className="mx-5 mb-6 flex gap-3">
-        <div className="flex-1 bg-gray-50 dark:bg-gray-900 rounded-xl px-4 py-3">
-          <div className="text-2xl font-bold text-gray-900 dark:text-gray-100 tabular-nums">
+      <div className="mx-5 mb-4 flex gap-2">
+        <div className="flex-1 bg-stone-100 dark:bg-stone-900 rounded-xl px-4 py-2.5">
+          <div className="text-2xl font-bold text-stone-900 dark:text-stone-100 tabular-nums">
             {today.count}
           </div>
-          <div className="text-xs text-gray-400 mt-0.5">今日の問題</div>
+          <div className="text-xs text-stone-400 mt-0.5">今日の問題</div>
         </div>
-        <div className="flex-1 bg-gray-50 dark:bg-gray-900 rounded-xl px-4 py-3">
+        <div className="flex-1 bg-stone-100 dark:bg-stone-900 rounded-xl px-4 py-2.5">
           <div className={`text-2xl font-bold tabular-nums ${
             correctRate === null
-              ? 'text-gray-300 dark:text-gray-700'
+              ? 'text-stone-300 dark:text-stone-700'
               : correctRate >= 70
               ? 'text-emerald-600 dark:text-emerald-500'
               : 'text-amber-600 dark:text-amber-500'
           }`}>
             {correctRate !== null ? `${correctRate}%` : '—'}
           </div>
-          <div className="text-xs text-gray-400 mt-0.5">正答率</div>
+          <div className="text-xs text-stone-400 mt-0.5">正答率</div>
         </div>
         {worst3.length > 0 && (
-          <div className="flex-[2] bg-gray-50 dark:bg-gray-900 rounded-xl px-4 py-3">
-            <div className="text-xs text-gray-400 mb-1.5">苦手</div>
+          <div className="flex-[2] bg-stone-100 dark:bg-stone-900 rounded-xl px-4 py-2.5">
+            <div className="text-xs text-stone-400 mb-1">苦手</div>
             <div className="space-y-0.5">
               {worst3.slice(0, 2).map(({ q, rate }) => (
                 <div key={q.id} className="flex items-center gap-2">
-                  <span className="text-red-500 text-xs font-semibold tabular-nums w-7 shrink-0">
+                  <span className="text-rose-500 text-xs font-semibold tabular-nums w-7 shrink-0">
                     {Math.round(rate * 100)}%
                   </span>
-                  <span className="text-xs text-gray-600 dark:text-gray-400 truncate">{q.ja}</span>
+                  <span className="text-xs text-stone-600 dark:text-stone-400 truncate">{q.ja}</span>
                 </div>
               ))}
             </div>
@@ -108,16 +108,16 @@ export default function HomeScreen({ questions, onStart, onStats }: Props) {
       </div>
 
       {/* Mode tabs */}
-      <div className="mx-5 mb-5">
-        <div className="flex gap-1 bg-gray-100 dark:bg-gray-900 rounded-xl p-1">
+      <div className="mx-5 mb-4">
+        <div className="flex gap-1 bg-stone-200 dark:bg-stone-800 rounded-xl p-1">
           {(['adaptive', 'chapter', 'theme'] as const).map((m) => (
             <button
               key={m}
               onClick={() => setMode(m)}
               className={`flex-1 py-2 rounded-lg text-sm font-semibold transition-all ${
                 mode === m
-                  ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm'
-                  : 'text-gray-500 dark:text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                  ? 'bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 shadow-sm'
+                  : 'text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-200'
               }`}
             >
               {m === 'adaptive' ? 'おまかせ' : m === 'chapter' ? '章別' : 'テーマ'}
@@ -128,10 +128,10 @@ export default function HomeScreen({ questions, onStart, onStats }: Props) {
 
       {/* Chapter selector */}
       {mode === 'chapter' && (
-        <div className="mx-5 mb-5 space-y-4">
+        <div className="mx-5 mb-4 space-y-3">
           {Object.entries(CHAPTER_LESSONS).map(([ch]) => (
             <div key={ch}>
-              <div className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2">
+              <div className="text-xs font-semibold text-stone-400 dark:text-stone-500 uppercase tracking-wider mb-2">
                 {ch}
               </div>
               <div className="flex flex-wrap gap-2">
@@ -139,8 +139,8 @@ export default function HomeScreen({ questions, onStart, onStats }: Props) {
                   onClick={() => { setSelectedChapter(ch); setSelectedLesson(null); }}
                   className={`h-9 px-3 rounded-lg text-xs font-semibold transition-colors ${
                     selectedChapter === ch && selectedLesson === null
-                      ? 'bg-indigo-600 text-white'
-                      : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+                      ? 'bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900'
+                      : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-700'
                   }`}
                 >
                   全て
@@ -161,8 +161,8 @@ export default function HomeScreen({ questions, onStart, onStats }: Props) {
                       }}
                       className={`h-9 px-3 rounded-lg text-sm font-semibold transition-colors ${
                         selectedChapter === ch && selectedLesson === lesson
-                          ? 'bg-indigo-600 text-white'
-                          : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+                          ? 'bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900'
+                          : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-700'
                       }`}
                     >
                       L{lesson}
@@ -176,7 +176,7 @@ export default function HomeScreen({ questions, onStart, onStats }: Props) {
 
       {/* Theme selector */}
       {mode === 'theme' && (
-        <div className="mx-5 mb-5">
+        <div className="mx-5 mb-4">
           <div className="flex flex-wrap gap-2">
             {themes.map((t) => (
               <button
@@ -184,8 +184,8 @@ export default function HomeScreen({ questions, onStart, onStats }: Props) {
                 onClick={() => setSelectedTheme(t)}
                 className={`h-9 px-4 rounded-lg text-sm font-medium transition-colors ${
                   selectedTheme === t
-                    ? 'bg-indigo-600 text-white'
-                    : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+                    ? 'bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900'
+                    : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-700'
                 }`}
               >
                 {t}
@@ -195,15 +195,15 @@ export default function HomeScreen({ questions, onStart, onStats }: Props) {
         </div>
       )}
 
-      {/* Start button */}
-      <div className="mt-auto mx-5 pb-8">
+      {/* Start button — always anchored to bottom of dvh container */}
+      <div className="mt-auto mx-5 pb-6">
         <button
           disabled={!canStart}
           onClick={handleStart}
-          className={`w-full h-14 rounded-xl text-base font-bold transition-all ${
+          className={`w-full h-12 rounded-xl text-base font-bold transition-all ${
             canStart
-              ? 'bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white shadow-sm'
-              : 'bg-gray-100 dark:bg-gray-900 text-gray-300 dark:text-gray-700'
+              ? 'bg-stone-900 dark:bg-stone-100 text-white dark:text-stone-900 hover:bg-stone-800 dark:hover:bg-stone-200 active:bg-stone-950 dark:active:bg-stone-300'
+              : 'bg-stone-200 dark:bg-stone-800 text-stone-400 dark:text-stone-600'
           }`}
         >
           スタート
