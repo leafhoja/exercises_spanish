@@ -60,12 +60,15 @@ export default function HomeScreen({ questions, onStart, onStats, showHint, onTo
       {/* Header */}
       <div className="flex items-center justify-between px-5 pt-6 pb-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">スペイン語</h1>
+          <div className="flex items-baseline gap-2">
+            <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">スペイン語</h1>
+            <span className="text-base">🇪🇸</span>
+          </div>
           <p className="text-sm text-zinc-400 mt-0.5">全{questions.length}問</p>
         </div>
         <button
           onClick={onStats}
-          className="text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+          className="text-sm font-medium text-zinc-500 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700 px-3 py-1.5 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
         >
           統計
         </button>
@@ -116,7 +119,7 @@ export default function HomeScreen({ questions, onStart, onStats, showHint, onTo
             onClick={() => setMode(m)}
             className={`py-3 px-1 mr-6 text-sm font-semibold border-b-2 -mb-px transition-colors ${
               mode === m
-                ? 'border-zinc-900 dark:border-zinc-100 text-zinc-900 dark:text-zinc-100'
+                ? 'border-red-500 text-zinc-900 dark:text-zinc-100'
                 : 'border-transparent text-zinc-400 dark:text-zinc-600 hover:text-zinc-700 dark:hover:text-zinc-400'
             }`}
           >
@@ -194,27 +197,27 @@ export default function HomeScreen({ questions, onStart, onStats, showHint, onTo
 
       {/* Start button + hint toggles */}
       <div className="mt-auto px-5 pb-8 pt-4">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm text-zinc-500 dark:text-zinc-400">穴埋めヒント</span>
+        <div className="flex items-center justify-between mb-2.5">
+          <span className="text-sm text-zinc-600 dark:text-zinc-400">穴埋めヒント</span>
           <button
             onClick={onToggleHint}
-            className={`text-xs font-semibold px-3 py-1.5 rounded-full transition-colors ${
+            className={`text-xs font-semibold px-3 py-1.5 rounded-lg border transition-colors ${
               showHint
-                ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900'
-                : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400'
+                ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 border-zinc-900 dark:border-zinc-100'
+                : 'bg-transparent text-zinc-400 dark:text-zinc-500 border-zinc-300 dark:border-zinc-600 hover:border-zinc-400'
             }`}
           >
             {showHint ? 'あり' : 'なし'}
           </button>
         </div>
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-sm text-zinc-500 dark:text-zinc-400">動詞ヒント（初期表示）</span>
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-sm text-zinc-600 dark:text-zinc-400">動詞ヒント（初期表示）</span>
           <button
             onClick={onToggleVerbHintAlwaysOpen}
-            className={`text-xs font-semibold px-3 py-1.5 rounded-full transition-colors ${
+            className={`text-xs font-semibold px-3 py-1.5 rounded-lg border transition-colors ${
               verbHintAlwaysOpen
-                ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900'
-                : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400'
+                ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 border-zinc-900 dark:border-zinc-100'
+                : 'bg-transparent text-zinc-400 dark:text-zinc-500 border-zinc-300 dark:border-zinc-600 hover:border-zinc-400'
             }`}
           >
             {verbHintAlwaysOpen ? '常に表示' : '折りたたむ'}
@@ -223,9 +226,9 @@ export default function HomeScreen({ questions, onStart, onStats, showHint, onTo
         <button
           disabled={!canStart}
           onClick={handleStart}
-          className={`w-full h-12 rounded-lg text-base font-bold transition-all ${
+          className={`w-full h-13 rounded-xl text-base font-bold transition-all ${
             canStart
-              ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:bg-zinc-800 dark:hover:bg-zinc-200 shadow-sm active:shadow-none active:translate-y-px'
+              ? 'bg-red-600 hover:bg-red-700 active:bg-red-800 text-white'
               : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400 dark:text-zinc-600'
           }`}
         >

@@ -4,18 +4,16 @@ import { selectNext, filterPool } from './lib/adaptive';
 import { getAllHistory, recordResult } from './lib/storage';
 import HomeScreen from './components/HomeScreen';
 import QuizScreen from './components/QuizScreen';
-import ResultScreen from './components/ResultScreen';
 import StatsScreen from './components/StatsScreen';
 import questionsData from './data/questions.json';
 
 const ALL_QUESTIONS = questionsData.questions as Question[];
 
-type Screen = 'home' | 'quiz' | 'result' | 'stats';
+type Screen = 'home' | 'quiz' | 'stats';
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>('home');
   const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
-  const [lastResult, setLastResult] = useState<'correct' | 'wrong'>('correct');
   const [sessionIndex, setSessionIndex] = useState(0);
   const sessionTotal = 20;
   const recentIds = useRef<string[]>([]);
@@ -77,20 +75,10 @@ export default function App() {
 
     if (result !== 'skip') {
       recordResult(currentQuestion.id, result);
-      recentIds.current = [...recentIds.current, currentQuestion.id];
-      setLastResult(result);
-      setSessionIndex((i) => i + 1);
-      setScreen('result');
-    } else {
-      recentIds.current = [...recentIds.current, currentQuestion.id];
-      setSessionIndex((i) => i + 1);
-      pickNext();
     }
-  }
-
-  function handleNext() {
+    recentIds.current = [...recentIds.current, currentQuestion.id];
+    setSessionIndex((i) => i + 1);
     pickNext();
-    setScreen('quiz');
   }
 
   if (screen === 'home') {
@@ -124,19 +112,9 @@ export default function App() {
         sessionIndex={sessionIndex}
         sessionTotal={sessionTotal}
         onResult={handleResult}
+        onHome={() => setScreen('home')}
         showHint={showHint}
         verbHintAlwaysOpen={verbHintAlwaysOpen}
-      />
-    );
-  }
-
-  if (screen === 'result' && currentQuestion) {
-    return (
-      <ResultScreen
-        question={currentQuestion}
-        result={lastResult}
-        onNext={handleNext}
-        onHome={() => setScreen('home')}
       />
     );
   }

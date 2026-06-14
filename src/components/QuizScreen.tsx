@@ -2,16 +2,36 @@ import { useState } from 'react';
 import type { Question } from '../types';
 import { extractVerbHints } from '../lib/parseExp';
 
+function FillSentence({ spanish, blanks }: { spanish: string; blanks: string[] }) {
+  const parts = spanish.split('(___)');
+  return (
+    <span className="text-xl font-semibold text-zinc-800 dark:text-zinc-200 tracking-wide leading-loose">
+      {parts.map((part, i) => (
+        <span key={i}>
+          {part}
+          {i < blanks.length && blanks[i].split(' ').map((_, wi) => (
+            <span
+              key={wi}
+              className="inline-block w-10 border-b-2 border-zinc-500 dark:border-zinc-400 mx-0.5 align-text-bottom"
+            />
+          ))}
+        </span>
+      ))}
+    </span>
+  );
+}
+
 interface Props {
   question: Question;
   sessionIndex: number;
   sessionTotal: number;
   onResult: (result: 'correct' | 'wrong' | 'skip') => void;
+  onHome: () => void;
   showHint: boolean;
   verbHintAlwaysOpen: boolean;
 }
 
-export default function QuizScreen({ question, sessionIndex, sessionTotal, onResult, showHint, verbHintAlwaysOpen }: Props) {
+export default function QuizScreen({ question, sessionIndex, sessionTotal, onResult, onHome, showHint, verbHintAlwaysOpen }: Props) {
   const [revealed, setReveal] = useState(false);
   const verbHints = extractVerbHints(question.exp ?? '');
   const [verbHintOpen, setVerbHintOpen] = useState(verbHintAlwaysOpen && verbHints.length > 0);
@@ -22,25 +42,31 @@ export default function QuizScreen({ question, sessionIndex, sessionTotal, onRes
   return (
     <div className="min-h-dvh flex flex-col max-w-lg mx-auto">
       {/* Progress bar */}
-      <div className="h-0.5 bg-zinc-100 dark:bg-zinc-900 w-full">
+      <div className="h-1 bg-zinc-100 dark:bg-zinc-900 w-full">
         <div
-          className="h-full bg-zinc-900 dark:bg-zinc-100 transition-all duration-300"
+          className="h-full bg-red-500 transition-all duration-500"
           style={{ width: `${progress * 100}%` }}
         />
       </div>
 
       {/* Meta row */}
-      <div className="flex items-center justify-between px-5 py-3 text-xs text-zinc-400 dark:text-zinc-600 border-b border-zinc-100 dark:border-zinc-900">
-        <span className="tabular-nums font-medium">{sessionIndex} / {sessionTotal}</span>
-        <span className="flex items-center gap-2">
+      <div className="flex items-center justify-between px-5 py-3 border-b border-zinc-100 dark:border-zinc-900">
+        <button
+          onClick={onHome}
+          className="text-sm font-medium text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors"
+        >
+          ← ホーム
+        </button>
+        <span className="text-xs text-zinc-400 tabular-nums">{sessionIndex} / {sessionTotal}</span>
+        <span className="flex items-center gap-1.5 text-xs text-zinc-400 dark:text-zinc-500">
           <span>{question.chapter} L{question.lesson}</span>
           {question.theme && (
-            <span className="border border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 px-2 py-0.5 rounded text-[11px] font-medium">
+            <span className="border border-zinc-200 dark:border-zinc-700 px-1.5 py-0.5 rounded text-[11px]">
               {question.theme}
             </span>
           )}
           {question.isPredicted && (
-            <span className="border border-amber-200 dark:border-amber-800 text-amber-600 dark:text-amber-400 px-2 py-0.5 rounded text-[11px] font-medium">
+            <span className="border border-amber-300 dark:border-amber-800 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded text-[11px]">
               予想
             </span>
           )}
@@ -82,8 +108,8 @@ export default function QuizScreen({ question, sessionIndex, sessionTotal, onRes
         {question.type === 'fill' && question.spanish && showHint && !revealed && (
           <div className="mb-6 px-4 py-3 border border-zinc-200 dark:border-zinc-800 rounded-lg">
             <p className="text-xs text-zinc-400 mb-2 font-medium">空欄を埋めよ</p>
-            <p className="text-xl font-semibold text-zinc-800 dark:text-zinc-200 tracking-wide">
-              {question.spanish}
+            <p className="leading-loose">
+              <FillSentence spanish={question.spanish} blanks={question.blanks ?? []} />
             </p>
           </div>
         )}
@@ -112,14 +138,16 @@ export default function QuizScreen({ question, sessionIndex, sessionTotal, onRes
             <div className="px-4 py-3 border border-zinc-200 dark:border-zinc-800 rounded-lg">
               {question.type === 'fill' && question.blanks && (
                 <div className="flex flex-wrap gap-2 mb-2">
-                  {question.blanks.map((b, i) => (
-                    <span
-                      key={i}
-                      className="bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 px-3 py-1 rounded text-lg font-bold"
-                    >
-                      {b}
-                    </span>
-                  ))}
+                  {question.blanks.flatMap((b, i) =>
+                    b.split(' ').map((word, wi) => (
+                      <span
+                        key={`${i}-${wi}`}
+                        className="bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 px-3 py-1 rounded text-lg font-bold"
+                      >
+                        {word}
+                      </span>
+                    ))
+                  )}
                 </div>
               )}
               {question.type === 'fill' && question.fullText && (
@@ -156,10 +184,10 @@ export default function QuizScreen({ question, sessionIndex, sessionTotal, onRes
           </>
         )}
 
-        <div className="text-center">
+        <div className="text-center pt-1">
           <button
             onClick={() => onResult('skip')}
-            className="text-xs text-zinc-300 dark:text-zinc-700 hover:text-zinc-500 dark:hover:text-zinc-500 py-2 transition-colors"
+            className="text-sm text-zinc-500 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700 px-6 py-2 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
           >
             スキップ
           </button>
