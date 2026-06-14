@@ -8,7 +8,7 @@
       "ja": "公園の近くに私たちの家がある。小さいながらも素敵な家だ。",
       "isPredicted": false,
       "type": "fill",
-      "spanish": "Cerca del parque (___) [___] casa. (___) [pequeño: ___] pero [bonito: ___].",
+      "spanish": "Cerca del parque (___) (___) casa. (___) pequeño: (___) pero bonito: (___).",
       "blanks": [
         "está",
         "nuestra",
@@ -16,7 +16,7 @@
         "pequeña",
         "bonita"
       ],
-      "fullText": "Cerca del parque ((está)) [(nuestra)] casa. ((Es)) [pequeño: (pequeña)] pero [bonito: (bonita)].",
+      "fullText": "Cerca del parque ((está)) ((nuestra)) casa. ((Es)) pequeño: ((pequeña)) pero bonito: ((bonita)).",
       "exp": "所在（〜がある）は <b>estar</b> → está。casa は女性単数なので所有形容詞は <b>nuestra</b>。性質・特徴を表す「〜である」は <b>ser</b> → Es。形容詞 pequeño/bonito も casa に一致して女性単数 <b>pequeña / bonita</b>。<br>⚠️ 所在を hay や ser にしない／nuestro と性を間違えないこと。<br>📖 <b>語句</b>：cerca de「〜の近くに」／parque「公園」／casa「家」／pero「しかし・けれども」／pequeño「小さい」／bonito「きれいな・素敵な」"
     },
     {
@@ -27,13 +27,13 @@
       "ja": "駐車場には２台の車がある。君たちの（車）は看板の後ろにあるよ。",
       "isPredicted": false,
       "type": "fill",
-      "spanish": "En el estacionamiento (___) dos coches. El [___] (___) detrás del letrero.",
+      "spanish": "En el estacionamiento (___) dos coches. El (___) (___) detrás del letrero.",
       "blanks": [
         "hay",
         "vuestro",
         "está"
       ],
-      "fullText": "En el estacionamiento ((hay)) dos coches. El [(vuestro)] ((está)) detrás del letrero.",
+      "fullText": "En el estacionamiento ((hay)) dos coches. El ((vuestro)) ((está)) detrás del letrero.",
       "exp": "不特定のものの存在「（いくつか）ある」は <b>hay</b>（不定）。「君たちの車」= el coche vuestro → 名詞を省いた所有代名詞 <b>el vuestro</b>。特定のものの所在は <b>estar</b> → está。<br>⚠️ dos coches のような不特定の数量には está ではなく hay。<br>📖 <b>語句</b>：estacionamiento「駐車場」／coche「車」／dos「2（の）」／detrás de「〜の後ろに」／letrero「看板・標識」"
     },
     {
@@ -44,14 +44,14 @@
       "ja": "私たちの娘は少し怠け者だが、今年のクラス委員だ。",
       "isPredicted": false,
       "type": "fill",
-      "spanish": "[___] hija (___) un poco [perezoso: ___], pero (___) la representante de la clase de este año.",
+      "spanish": "(___) hija (___) un poco perezoso: (___), pero (___) la representante de la clase de este año.",
       "blanks": [
         "Nuestra",
         "es",
         "perezosa",
         "es"
       ],
-      "fullText": "[(Nuestra)] hija ((es)) un poco [perezoso: (perezosa)], pero ((es)) la representante de la clase de este año.",
+      "fullText": "((Nuestra)) hija ((es)) un poco perezoso: ((perezosa)), pero ((es)) la representante de la clase de este año.",
       "exp": "hija（女性単数）に一致して <b>Nuestra</b>。性格（怠け者）も身分（委員）も恒常的属性なので <b>ser</b> → es。perezoso も hija に一致して <b>perezosa</b>。<br>⚠️ 「委員である」を estar にしない（身分・職業は ser）。<br>📖 <b>語句</b>：hija「娘」／un poco「少し」／perezoso「怠け者の・なまけた」／representante「代表・委員」／clase「クラス・授業」／este año「今年」（año「年」）"
     },
     {
@@ -62,13 +62,13 @@
       "ja": "アルベルトとソニアはこのプロジェクトのリーダーだ。（彼らは）私の友人である。",
       "isPredicted": false,
       "type": "fill",
-      "spanish": "Alberto y Sonia (___) los líderes de este proyecto. (___) amigos [___].",
+      "spanish": "Alberto y Sonia (___) los líderes de este proyecto. (___) amigos (___).",
       "blanks": [
         "son",
         "Son",
         "míos"
       ],
-      "fullText": "Alberto y Sonia ((son)) los líderes de este proyecto. ((Son)) amigos [(míos)].",
+      "fullText": "Alberto y Sonia ((son)) los líderes de este proyecto. ((Son)) amigos ((míos)).",
       "exp": "主語が複数（Alberto y Sonia）なので ser は <b>son</b>。「私の友人たち」は名詞の後ろに置く所有形容詞 → 男性複数 <b>míos</b>（amigos に一致）。<br>⚠️ 前置形 mis amigos ではなく、ここは amigos míos（後置形）。<br>📖 <b>語句</b>：líder「リーダー・指導者」（複数 líderes）／proyecto「プロジェクト・計画」／este「この」／amigo「友人」"
     },
     {
@@ -79,7 +79,7 @@
       "ja": "君のご両親はどんな人たち？ — とても働き者だけど、ここ数日は疲れているんだ。",
       "isPredicted": false,
       "type": "fill",
-      "spanish": "¿Cómo (___) [___] padres? — (___) muy [trabajador: ___], pero estos días (___) un poco [cansado: ___].",
+      "spanish": "¿Cómo (___) (___) padres? — (___) muy trabajador: (___), pero estos días (___) un poco cansado: (___).",
       "blanks": [
         "son",
         "tus",
@@ -88,7 +88,7 @@
         "están",
         "cansados"
       ],
-      "fullText": "¿Cómo ((son)) [(tus)] padres? — ((Son)) muy [trabajador: (trabajadores)], pero estos días ((están)) un poco [cansado: (cansados)].",
+      "fullText": "¿Cómo ((son)) ((tus)) padres? — ((Son)) muy trabajador: ((trabajadores)), pero estos días ((están)) un poco cansado: ((cansados)).",
       "exp": "恒常的な性格を尋ねる・答えるので <b>ser</b> → son。padres（男性複数）に一致して <b>tus</b> / <b>trabajadores</b>。「ここ数日は疲れている」は一時的な状態なので <b>estar</b> → están、cansado も複数一致で <b>cansados</b>。<br>⚠️ 性格＝ser、一時的状態＝estar の対比が狙い。trabajador は -es を付けて複数化。<br>📖 <b>語句</b>：cómo「どんな・どのように」／padres「両親」（padre「父」の複数）／muy「とても」／trabajador「働き者の・勤勉な」／estos días「ここ数日」（día「日」）／cansado「疲れた」"
     },
     {
@@ -99,14 +99,14 @@
       "ja": "私の何人かの友人たちは UCLA にいる。そこに彼女たちの研究室があるのだ。",
       "isPredicted": false,
       "type": "fill",
-      "spanish": "Unas amigas [___] (___) en la Universidad de California en Los Ángeles. Allí (___) [___] laboratorio.",
+      "spanish": "Unas amigas (___) (___) en la Universidad de California en Los Ángeles. Allí (___) (___) laboratorio.",
       "blanks": [
         "mías",
         "están",
         "está",
         "su"
       ],
-      "fullText": "Unas amigas [(mías)] ((están)) en la Universidad de California en Los Ángeles. Allí ((está)) [(su)] laboratorio.",
+      "fullText": "Unas amigas ((mías)) ((están)) en la Universidad de California en Los Ángeles. Allí ((está)) ((su)) laboratorio.",
       "exp": "「私の友人たち（の何人か）」= unas amigas mías → 後置形・女性複数 <b>mías</b>。人の所在は <b>estar</b> → están / está。「彼女たちの研究室」= <b>su</b> laboratorio（su は被所有物 laboratorio が単数なので su）。<br>⚠️ su は「所有者の数」ではなく「被所有物の数」に一致（laboratorio 単数 → su）。<br>📖 <b>語句</b>：unas「いくつかの・数人の」（女性複数の不定冠詞）／amiga「（女性の）友人」／universidad「大学」／allí「そこに・あそこに」／laboratorio「研究室・実験室」"
     },
     {
@@ -117,14 +117,14 @@
       "ja": "私のスーツケースはここにあります。あなたのはどこですか？",
       "isPredicted": false,
       "type": "fill",
-      "spanish": "[___] maleta (___) aquí. ¿Dónde (___) la [___]?",
+      "spanish": "(___) maleta (___) aquí. ¿Dónde (___) la (___)?",
       "blanks": [
         "Mi",
         "está",
         "está",
         "suya"
       ],
-      "fullText": "[(Mi)] maleta ((está)) aquí. ¿Dónde ((está)) la [(suya)]?",
+      "fullText": "((Mi)) maleta ((está)) aquí. ¿Dónde ((está)) la ((suya))?",
       "exp": "maleta（女性単数）に <b>Mi</b>。所在は <b>estar</b> → está。「あなたのもの」は所有代名詞 <b>la suya</b>（maleta を受けて女性単数）。<br>⚠️ la tuya（君の）と la suya（あなたの）を取り違えないこと。<br>📖 <b>語句</b>：maleta「スーツケース・旅行かばん」／aquí「ここに」／dónde「どこに」"
     },
     {
@@ -135,13 +135,13 @@
       "ja": "彼の祖父母の家には数えきれないほどの本がある。",
       "isPredicted": false,
       "type": "fill",
-      "spanish": "En la casa de [___] abuelos (___) [innumerable: ___] libros.",
+      "spanish": "En la casa de (___) abuelos (___) innumerable: (___) libros.",
       "blanks": [
         "sus",
         "hay",
         "innumerables"
       ],
-      "fullText": "En la casa de [(sus)] abuelos ((hay)) [innumerable: (innumerables)] libros.",
+      "fullText": "En la casa de ((sus)) abuelos ((hay)) innumerable: ((innumerables)) libros.",
       "exp": "「彼の祖父母」= <b>sus</b> abuelos（被所有物 abuelos が複数なので sus）。不特定多数の存在は <b>hay</b>。innumerable は libros（複数）に一致して <b>innumerables</b>。<br>⚠️ 数えきれない＝不特定多数なので está ではなく hay。<br>📖 <b>語句</b>：casa de 〜「〜の家」／abuelos「祖父母」（abuelo「祖父」の複数）／innumerable「数えきれない・無数の」／libro「本」"
     },
     {
@@ -152,12 +152,12 @@
       "ja": "我々の国はアジア大陸の東にある。",
       "isPredicted": false,
       "type": "fill",
-      "spanish": "El país [___] (___) al este del Continente Asiático.",
+      "spanish": "El país (___) (___) al este del Continente Asiático.",
       "blanks": [
         "nuestro",
         "está"
       ],
-      "fullText": "El país [(nuestro)] ((está)) al este del Continente Asiático.",
+      "fullText": "El país ((nuestro)) ((está)) al este del Continente Asiático.",
       "exp": "「我々の国」= el país nuestro → 後置形・男性単数 <b>nuestro</b>。位置・所在は <b>estar</b> → está。<br>⚠️ 国の位置も estar（恒久的でも「位置」は estar を使う）。<br>📖 <b>語句</b>：país「国」／al este de「〜の東に」（este「東」）／continente「大陸」／asiático「アジアの」"
     },
     {
@@ -168,13 +168,13 @@
       "ja": "あなた方のお母様は風邪を引いているのですか？",
       "isPredicted": false,
       "type": "fill",
-      "spanish": "¿(___) [resfriado: ___] la madre [___]?",
+      "spanish": "¿(___) resfriado: (___) la madre (___)?",
       "blanks": [
         "Está",
         "resfriada",
         "suya"
       ],
-      "fullText": "¿((Está)) [resfriado: (resfriada)] la madre [(suya)]?",
+      "fullText": "¿((Está)) resfriado: ((resfriada)) la madre ((suya))?",
       "exp": "一時的な体調（風邪をひいている）は <b>estar</b> → Está。resfriado は madre（女性単数）に一致して <b>resfriada</b>。「あなた方のお母様」= la madre suya（後置形 <b>suya</b>）。<br>⚠️ 体調は ser ではなく estar。<br>📖 <b>語句</b>：resfriado「風邪をひいた」（estar resfriado で「風邪をひいている」）／madre「母」"
     },
     {
@@ -185,14 +185,14 @@
       "ja": "僕にそのボールペンを貸してくれる？ — ええ、貸してあげるわ。",
       "isPredicted": false,
       "type": "fill",
-      "spanish": "¿(___) prestas [___] bolígrafo? — Sí, (___)(___) presto.",
+      "spanish": "¿(___) prestas (___) bolígrafo? — Sí, (___)(___) presto.",
       "blanks": [
         "Me",
         "ese",
         "te",
         "lo"
       ],
-      "fullText": "¿((Me)) prestas [(ese)] bolígrafo? — Sí, ((te))((lo)) presto.",
+      "fullText": "¿((Me)) prestas ((ese)) bolígrafo? — Sí, ((te))((lo)) presto.",
       "exp": "「僕に」= 間接目的格 <b>me</b>。「その」= 中称の指示形容詞 <b>ese</b>（男性単数 bolígrafo）。答えは「君に＝te」＋「それを＝lo（el bolígrafo）」で、語順は<b>間接 te ＋ 直接 lo</b>。<br>⚠️ 語順は必ず「間接→直接」。lo te のように逆にしない。<br>📖 <b>語句</b>：prestar「貸す」／bolígrafo「ボールペン」"
     },
     {
@@ -203,14 +203,14 @@
       "ja": "誰があなた方に文法を教えてくれるのですか？ — あの先生が教えてくれます。",
       "isPredicted": false,
       "type": "fill",
-      "spanish": "¿Quién (___) enseña la gramática? — (___)(___) enseña [___] profesora.",
+      "spanish": "¿Quién (___) enseña la gramática? — (___)(___) enseña (___) profesora.",
       "blanks": [
         "les",
         "Nos",
         "la",
         "aquella"
       ],
-      "fullText": "¿Quién ((les)) enseña la gramática? — ((Nos))((la)) enseña [(aquella)] profesora.",
+      "fullText": "¿Quién ((les)) enseña la gramática? — ((Nos))((la)) enseña ((aquella)) profesora.",
       "exp": "「あなた方に」= 間接 <b>les</b>。答えは「私たちに＝nos」＋「それを＝la（la gramática）」。「あの（遠くの）先生」= 遠称 <b>aquella</b>（女性単数）。<br>⚠️ ese（中称）と aquel（遠称）の区別。ここは「あの」＝aquella。<br>📖 <b>語句</b>：quién「誰」／enseñar「教える」／gramática「文法」／profesora「（女性の）先生」"
     },
     {
@@ -238,14 +238,14 @@
       "ja": "君たちは先生にこれらの手紙を書くのかい？ — いいや、忙しいから書かないよ。",
       "isPredicted": false,
       "type": "fill",
-      "spanish": "¿(___) escribís [___] cartas al profesor? — No, no (___)(___) escribimos porque estamos ocupados.",
+      "spanish": "¿(___) escribís (___) cartas al profesor? — No, no (___)(___) escribimos porque estamos ocupados.",
       "blanks": [
         "Le",
         "estas",
         "se",
         "las"
       ],
-      "fullText": "¿((Le)) escribís [(estas)] cartas al profesor? — No, no ((se))((las)) escribimos porque estamos ocupados.",
+      "fullText": "¿((Le)) escribís ((estas)) cartas al profesor? — No, no ((se))((las)) escribimos porque estamos ocupados.",
       "exp": "「先生に」= 間接 <b>le</b>。「これらの」= 近称 <b>estas</b>（女性複数 cartas）。答えは間接（le→<b>se</b>）＋直接 <b>las</b>（cartas）で <b>se las</b>。否定文では no を se las の前に置く。<br>⚠️ ここも le→se の変化。直接目的は cartas に合わせ las（女性複数）。<br>📖 <b>語句</b>：escribir「書く」／carta「手紙」／profesor「（男性の）先生」／porque「なぜなら・〜だから」／ocupado「忙しい」"
     },
     {
@@ -256,12 +256,12 @@
       "ja": "君はクリスマスに、娘さんたちに何を買ってあげるの？ — 私は彼女たちにあれらの本を買ってあげなくてはならないんだ。",
       "isPredicted": false,
       "type": "fill",
-      "spanish": "¿Qué compras a tus hijas en Navidad? — Debo (___) [___] libros.",
+      "spanish": "¿Qué compras a tus hijas en Navidad? — Debo (___) (___) libros.",
       "blanks": [
         "comprarles",
         "aquellos"
       ],
-      "fullText": "¿Qué compras a tus hijas en Navidad? — Debo ((comprarles)) [(aquellos)] libros.",
+      "fullText": "¿Qué compras a tus hijas en Navidad? — Debo ((comprarles)) ((aquellos)) libros.",
       "exp": "不定詞（comprar）には目的格代名詞を<b>後ろに付ける</b>：comprar＋les（彼女たちに）→ <b>comprarles</b>。「あれらの」= 遠称 <b>aquellos</b>（男性複数 libros）。<br>⚠️ deber＋不定詞のとき、代名詞は不定詞の後ろに連結（les debo comprar も可だが、ここは comprarles）。<br>📖 <b>語句</b>：qué「何」／comprar「買う」／hija「娘」／Navidad「クリスマス」／deber＋不定詞「〜しなければならない」"
     },
     {
@@ -272,13 +272,13 @@
       "ja": "（あなたは）明日、私のオフィスに来ていただいて構いませんか？",
       "isPredicted": false,
       "type": "fill",
-      "spanish": "¿[___] (___) a [___] venir a mi oficina mañana?",
+      "spanish": "¿(___) (___) a (___) venir a mi oficina mañana?",
       "blanks": [
         "Le",
         "importa",
         "usted"
       ],
-      "fullText": "¿[(Le)] ((importa)) a [(usted)] venir a mi oficina mañana?",
+      "fullText": "¿((Le)) ((importa)) a ((usted)) venir a mi oficina mañana?",
       "exp": "gustar 型は「物・事が主語、人は間接目的格」。主語は venir（不定詞＝3人称単数扱い）なので <b>importa</b>。「あなたに」= 間接 <b>le</b>、強調の a＋<b>usted</b>。<br>⚠️ 主語は「人」ではなく「来ること（venir）」。だから動詞は3単。<br>📖 <b>語句</b>：importar「気にかかる・差し支える」（¿Le importa＋不定詞? で「〜していただいて構いませんか／〜は迷惑ですか」）／venir「来る」／oficina「オフィス・事務所」"
     },
     {
@@ -289,13 +289,13 @@
       "ja": "私と夫はウィンタースポーツが大好きだ。",
       "isPredicted": false,
       "type": "fill",
-      "spanish": "A [___] y a mi marido [___] (___) los deportes de invierno.",
+      "spanish": "A (___) y a mi marido (___) (___) los deportes de invierno.",
       "blanks": [
         "mí",
         "nos",
         "encantan"
       ],
-      "fullText": "A [(mí)] y a mi marido [(nos)] ((encantan)) los deportes de invierno.",
+      "fullText": "A ((mí)) y a mi marido ((nos)) ((encantan)) los deportes de invierno.",
       "exp": "主語は los deportes（複数）→ <b>encantan</b>（3複）。「私と夫に」＝私たちなので間接 <b>nos</b>、強調は a <b>mí</b>（前置詞の後は mí）。<br>⚠️ 主語が複数なら動詞も複数。encanta としない。a mi（所有）ではなく a mí（アクセント付き＝私）。<br>📖 <b>語句</b>：encantar「大好きである・うっとりさせる」／marido「夫」／deporte「スポーツ」／invierno「冬」／deportes de invierno「ウィンタースポーツ」"
     },
     {
@@ -306,12 +306,12 @@
       "ja": "両親は、私の将来が前途洋々だと思っている。",
       "isPredicted": false,
       "type": "fill",
-      "spanish": "Mi futuro [___] (___) lleno de esperanzas a mis padres.",
+      "spanish": "Mi futuro (___) (___) lleno de esperanzas a mis padres.",
       "blanks": [
         "les",
         "parece"
       ],
-      "fullText": "Mi futuro [(les)] ((parece)) lleno de esperanzas a mis padres.",
+      "fullText": "Mi futuro ((les)) ((parece)) lleno de esperanzas a mis padres.",
       "exp": "主語は Mi futuro（単数）→ <b>parece</b>。「両親に（a mis padres）」= 間接 <b>les</b>。parecer＋形容詞で「〜のように思われる」。<br>⚠️ 「両親が思う」だが、構文上の主語は「私の将来」。動詞は3単 parece。<br>📖 <b>語句</b>：futuro「将来・未来」／parecer「〜のように思われる」／lleno de「〜で満ちた・いっぱいの」／esperanza「希望」（複数 esperanzas）"
     },
     {
@@ -322,13 +322,13 @@
       "ja": "私たちはスペイン黄金世紀の小説に非常に関心があります。",
       "isPredicted": false,
       "type": "fill",
-      "spanish": "A [___] [___] (___) mucho las novelas del Siglo de Oro.",
+      "spanish": "A (___) (___) (___) mucho las novelas del Siglo de Oro.",
       "blanks": [
         "nosotros",
         "nos",
         "interesan"
       ],
-      "fullText": "A [(nosotros)] [(nos)] ((interesan)) mucho las novelas del Siglo de Oro.",
+      "fullText": "A ((nosotros)) ((nos)) ((interesan)) mucho las novelas del Siglo de Oro.",
       "exp": "主語は las novelas（複数）→ <b>interesan</b>。「私たちに」= 間接 <b>nos</b>、強調 a <b>nosotros</b>（話し手が女性のみなら a nosotras も可）。<br>⚠️ 主語の数（複数）に動詞を一致。interesa としない。<br>📖 <b>語句</b>：interesar「興味を起こさせる」／mucho「とても・大いに」／novela「小説」／Siglo de Oro「（スペイン文学の）黄金世紀」（siglo「世紀」／oro「金」）"
     },
     {
@@ -339,13 +339,13 @@
       "ja": "君は川で泳いだり釣りをしたりするのが好きかい？",
       "isPredicted": false,
       "type": "fill",
-      "spanish": "¿A [___] [___] (___) nadar y pescar en río?",
+      "spanish": "¿A (___) (___) (___) nadar y pescar en río?",
       "blanks": [
         "ti",
         "te",
         "gusta"
       ],
-      "fullText": "¿A [(ti)] [(te)] ((gusta)) nadar y pescar en río?",
+      "fullText": "¿A ((ti)) ((te)) ((gusta)) nadar y pescar en río?",
       "exp": "主語は不定詞 nadar y pescar（動作＝3単扱い）→ <b>gusta</b>。「君に」= 間接 <b>te</b>、強調 a <b>ti</b>。<br>⚠️ 不定詞が複数並んでも動詞は単数 gusta（gustan にしない）。<br>📖 <b>語句</b>：gustar「好む・気に入る」／nadar「泳ぐ」／pescar「釣りをする」／río「川」"
     },
     {
@@ -356,13 +356,13 @@
       "ja": "私はちょっとキューバ料理を食べてみたいな。",
       "isPredicted": false,
       "type": "fill",
-      "spanish": "A [___] [___] (___) un poco las comidas cubanas.",
+      "spanish": "A (___) (___) (___) un poco las comidas cubanas.",
       "blanks": [
         "mí",
         "me",
         "apetecen"
       ],
-      "fullText": "A [(mí)] [(me)] ((apetecen)) un poco las comidas cubanas.",
+      "fullText": "A ((mí)) ((me)) ((apetecen)) un poco las comidas cubanas.",
       "exp": "主語は las comidas（複数）→ <b>apetecen</b>。「私に」= 間接 <b>me</b>、強調 a <b>mí</b>。apetecer は「〜したい気がする・食べたい気分だ」。<br>⚠️ 主語複数 → apetecen。a mí のアクセントに注意。<br>📖 <b>語句</b>：apetecer「（〜が）欲しくなる・食べたい気分だ」／un poco「少し」／comida「食べ物・料理」／cubano「キューバの・キューバ料理」"
     },
     {
