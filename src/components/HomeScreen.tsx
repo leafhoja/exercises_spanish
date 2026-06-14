@@ -20,7 +20,7 @@ const CHAPTER_LESSONS: Record<string, number[]> = {
 const COUNT_OPTIONS = [10, 20, 30, 50, 0] as const;
 
 export default function HomeScreen({ questions, onStart, onStats, showHint, onToggleHint, verbHintAlwaysOpen, onToggleVerbHintAlwaysOpen }: Props) {
-  const [mode, setMode] = useState<'adaptive' | 'chapter' | 'theme'>('adaptive');
+  const [mode, setMode] = useState<'adaptive' | 'chapter' | 'theme'>('chapter');
   const [selectedChapter, setSelectedChapter] = useState<string>('');
   const [selectedLesson, setSelectedLesson] = useState<number | null>(null);
   const [selectedTheme, setSelectedTheme] = useState<string>('');
