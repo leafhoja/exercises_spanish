@@ -1,4 +1,4 @@
-import type { SessionEntry } from '../App';
+import type { SessionEntry } from '../types';
 
 interface WeakArea {
   label: string;

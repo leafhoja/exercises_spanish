@@ -46,3 +46,8 @@ export interface QuizFilter {
   theme?: string;
   count?: number; // 0 = unlimited
 }
+
+export interface SessionEntry {
+  question: Question;
+  result: 'correct' | 'wrong' | 'skip';
+}

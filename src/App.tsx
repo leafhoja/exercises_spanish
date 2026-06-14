@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
-import type { Question, QuizFilter } from './types';
+import type { Question, QuizFilter, SessionEntry } from './types';
 import { selectNext, filterPool } from './lib/adaptive';
 import { getAllHistory, recordResult } from './lib/storage';
 import HomeScreen from './components/HomeScreen';
@@ -12,10 +12,6 @@ const ALL_QUESTIONS = questionsData.questions as Question[];
 
 type Screen = 'home' | 'quiz' | 'stats' | 'result';
 
-export interface SessionEntry {
-  question: Question;
-  result: 'correct' | 'wrong' | 'skip';
-}
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>('home');

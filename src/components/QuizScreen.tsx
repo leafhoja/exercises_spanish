@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import type { Question } from '../types';
-import type { SessionEntry } from '../App';
+import type { Question, SessionEntry } from '../types';
 import { extractVerbHints } from '../lib/parseExp';
 
 function FullTextDisplay({ text }: { text: string }) {
