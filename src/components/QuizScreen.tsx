@@ -226,7 +226,7 @@ export default function QuizScreen({ question, sessionIndex, sessionTotal, onRes
             return (
               <div
                 key={i}
-                className={`flex-1 h-1.5 py-2 box-content transition-colors duration-300 ${color} ${entry ? 'cursor-pointer active:opacity-60' : ''}`}
+                className={`flex-1 h-0.5 py-2 box-content transition-colors duration-300 ${color} ${entry ? 'cursor-pointer active:opacity-60' : ''}`}
                 onClick={entry ? () => setHistoryIdx(i) : undefined}
               />
             );
@@ -234,11 +234,11 @@ export default function QuizScreen({ question, sessionIndex, sessionTotal, onRes
         </div>
       ) : (
         <div
-          className={`h-1.5 py-2 box-content bg-zinc-100 dark:bg-zinc-900 w-full ${sessionHistory.length > 0 ? 'cursor-pointer' : ''}`}
+          className={`h-0.5 py-2 box-content bg-zinc-100 dark:bg-zinc-900 w-full ${sessionHistory.length > 0 ? 'cursor-pointer' : ''}`}
           onClick={sessionHistory.length > 0 ? () => setHistoryIdx(sessionHistory.length - 1) : undefined}
         >
           <div
-            className={`h-1.5 transition-all duration-500 ${lastResult === 'correct' ? 'bg-emerald-500' : 'bg-rose-500'}`}
+            className={`h-0.5 transition-all duration-500 ${lastResult === 'correct' ? 'bg-emerald-500' : 'bg-rose-500'}`}
             style={{ width: `${progress * 100}%` }}
           />
         </div>
