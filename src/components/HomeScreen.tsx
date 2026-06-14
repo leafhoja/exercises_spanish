@@ -114,72 +114,75 @@ export default function HomeScreen({ questions, onStart, onStats, showHint, onTo
         )}
       </div>
 
-      {/* Mode tabs — underline style */}
-      <div className="flex border-b border-zinc-200 dark:border-zinc-800 px-5 mt-1">
-        {(['adaptive', 'chapter', 'theme'] as const).map((m) => (
-          <button
-            key={m}
-            onClick={() => setMode(m)}
-            className={`py-3 px-1 mr-6 text-sm font-semibold border-b-2 -mb-px transition-colors ${
-              mode === m
-                ? 'border-red-500 text-zinc-900 dark:text-zinc-100'
-                : 'border-transparent text-zinc-400 dark:text-zinc-600 hover:text-zinc-700 dark:hover:text-zinc-400'
-            }`}
-          >
-            {m === 'adaptive' ? 'おまかせ' : m === 'chapter' ? '章別' : 'テーマ'}
-          </button>
-        ))}
-      </div>
+      {/* Range selection */}
+      <div className="px-5 pt-4 pb-2">
+        <div className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-3">範囲</div>
 
-      {/* Chapter selector */}
-      {mode === 'chapter' && (
-        <div className="px-5 pt-4 pb-2 space-y-4">
-          {Object.entries(CHAPTER_LESSONS).map(([ch]) => (
-            <div key={ch}>
-              <div className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">{ch}</div>
-              <div className="flex flex-wrap gap-1.5">
-                <button
-                  onClick={() => { setSelectedChapter(ch); setSelectedLesson(null); }}
-                  className={`h-8 px-3 rounded text-xs font-semibold transition-colors ${
-                    selectedChapter === ch && selectedLesson === null
-                      ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900'
-                      : 'border border-zinc-300 dark:border-zinc-600 text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:bg-zinc-50 dark:hover:border-zinc-500 dark:hover:bg-zinc-800'
-                  }`}
-                >
-                  全て
-                </button>
-                {questions
-                  .filter((q) => q.chapter === ch)
-                  .map((q) => q.lesson)
-                  .filter((v, i, a) => a.indexOf(v) === i)
-                  .sort((a, b) => a - b)
-                  .map((lesson) => (
-                    <button
-                      key={`${ch}-${lesson}`}
-                      onClick={() => {
-                        setSelectedChapter(ch);
-                        setSelectedLesson(
-                          selectedChapter === ch && selectedLesson === lesson ? null : lesson
-                        );
-                      }}
-                      className={`h-8 px-3 rounded text-sm font-semibold transition-colors ${
-                        selectedChapter === ch && selectedLesson === lesson
-                          ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900'
-                          : 'border border-zinc-300 dark:border-zinc-600 text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:bg-zinc-50 dark:hover:border-zinc-500 dark:hover:bg-zinc-800'
-                      }`}
-                    >
-                      L{lesson}
-                    </button>
-                  ))}
-              </div>
-            </div>
+        {/* Mode buttons */}
+        <div className="flex gap-1.5 mb-3">
+          {(['adaptive', 'chapter', 'theme'] as const).map((m) => (
+            <button
+              key={m}
+              onClick={() => setMode(m)}
+              className={`h-8 px-3 rounded text-xs font-semibold transition-colors ${
+                mode === m
+                  ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900'
+                  : 'border border-zinc-300 dark:border-zinc-600 text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:bg-zinc-50 dark:hover:border-zinc-500 dark:hover:bg-zinc-800'
+              }`}
+            >
+              {m === 'adaptive' ? 'おまかせ' : m === 'chapter' ? '章別' : 'テーマ'}
+            </button>
           ))}
         </div>
-      )}
 
-      {/* Theme selector */}
-      {mode === 'theme' && (
-        <div className="px-5 pt-4 pb-2">
+        {/* Chapter selector */}
+        {mode === 'chapter' && (
+          <div className="space-y-3">
+            {Object.entries(CHAPTER_LESSONS).map(([ch]) => (
+              <div key={ch}>
+                <div className="text-xs text-zinc-400 mb-1.5">{ch}</div>
+                <div className="flex flex-wrap gap-1.5">
+                  <button
+                    onClick={() => { setSelectedChapter(ch); setSelectedLesson(null); }}
+                    className={`h-8 px-3 rounded text-xs font-semibold transition-colors ${
+                      selectedChapter === ch && selectedLesson === null
+                        ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900'
+                        : 'border border-zinc-300 dark:border-zinc-600 text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:bg-zinc-50 dark:hover:border-zinc-500 dark:hover:bg-zinc-800'
+                    }`}
+                  >
+                    全て
+                  </button>
+                  {questions
+                    .filter((q) => q.chapter === ch)
+                    .map((q) => q.lesson)
+                    .filter((v, i, a) => a.indexOf(v) === i)
+                    .sort((a, b) => a - b)
+                    .map((lesson) => (
+                      <button
+                        key={`${ch}-${lesson}`}
+                        onClick={() => {
+                          setSelectedChapter(ch);
+                          setSelectedLesson(
+                            selectedChapter === ch && selectedLesson === lesson ? null : lesson
+                          );
+                        }}
+                        className={`h-8 px-3 rounded text-sm font-semibold transition-colors ${
+                          selectedChapter === ch && selectedLesson === lesson
+                            ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900'
+                            : 'border border-zinc-300 dark:border-zinc-600 text-zinc-700 dark:text-zinc-300 hover:border-zinc-400 hover:bg-zinc-50 dark:hover:border-zinc-500 dark:hover:bg-zinc-800'
+                        }`}
+                      >
+                        L{lesson}
+                      </button>
+                    ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Theme selector */}
+        {mode === 'theme' && (
           <div className="flex flex-wrap gap-1.5">
             {themes.map((t) => (
               <button
@@ -195,8 +198,8 @@ export default function HomeScreen({ questions, onStart, onStats, showHint, onTo
               </button>
             ))}
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Start button + hint toggles */}
       <div className="mt-auto px-5 pb-8 pt-4">

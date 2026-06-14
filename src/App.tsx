@@ -5,11 +5,17 @@ import { getAllHistory, recordResult } from './lib/storage';
 import HomeScreen from './components/HomeScreen';
 import QuizScreen from './components/QuizScreen';
 import StatsScreen from './components/StatsScreen';
+import SessionResultScreen from './components/SessionResultScreen';
 import questionsData from './data/questions.json';
 
 const ALL_QUESTIONS = questionsData.questions as Question[];
 
-type Screen = 'home' | 'quiz' | 'stats';
+type Screen = 'home' | 'quiz' | 'stats' | 'result';
+
+export interface SessionEntry {
+  question: Question;
+  result: 'correct' | 'wrong' | 'skip';
+}
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>('home');
@@ -21,6 +27,7 @@ export default function App() {
   const [showHint, setShowHint] = useState(() => localStorage.getItem('spanish_show_hint') !== 'false');
   const [verbHintAlwaysOpen, setVerbHintAlwaysOpen] = useState(() => localStorage.getItem('spanish_verb_hint_always_open') !== 'false');
   const [lastResult, setLastResult] = useState<'correct' | 'wrong' | 'skip' | null>(null);
+  const [sessionHistory, setSessionHistory] = useState<SessionEntry[]>([]);
 
   function toggleHint() {
     setShowHint(h => {
@@ -40,6 +47,7 @@ export default function App() {
 
   const startQuiz = useCallback((f: QuizFilter) => {
     recentIds.current = [];
+    setSessionHistory([]);
 
     let filtered = ALL_QUESTIONS;
     if (f.mode === 'chapter') {
@@ -78,12 +86,13 @@ export default function App() {
     if (result !== 'skip') {
       recordResult(currentQuestion.id, result);
     }
+    setSessionHistory(h => [...h, { question: currentQuestion, result }]);
     recentIds.current = [...recentIds.current, currentQuestion.id];
     setLastResult(result);
     const newIndex = sessionIndex + 1;
     setSessionIndex(newIndex);
     if (sessionTotal > 0 && newIndex >= sessionTotal) {
-      setScreen('home');
+      setScreen('result');
       return;
     }
     pickNext();
@@ -112,6 +121,15 @@ export default function App() {
     );
   }
 
+  if (screen === 'result') {
+    return (
+      <SessionResultScreen
+        records={sessionHistory}
+        onHome={() => setScreen('home')}
+      />
+    );
+  }
+
   if (screen === 'quiz' && currentQuestion) {
     return (
       <QuizScreen
@@ -124,6 +142,7 @@ export default function App() {
         showHint={showHint}
         verbHintAlwaysOpen={verbHintAlwaysOpen}
         lastResult={lastResult}
+        sessionHistory={sessionHistory}
       />
     );
   }

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { Question } from '../types';
+import type { SessionEntry } from '../App';
 import { extractVerbHints } from '../lib/parseExp';
 
 function FullTextDisplay({ text }: { text: string }) {
@@ -40,6 +41,142 @@ function FillSentence({ spanish, blanks }: { spanish: string; blanks: string[] }
   );
 }
 
+function AnswerBlock({ question }: { question: Question }) {
+  return (
+    <div className="px-4 py-3 border border-zinc-200 dark:border-zinc-800 rounded-lg">
+      {question.type === 'fill' && question.blanks && (
+        <div className="flex flex-wrap gap-2 mb-2">
+          {question.blanks.flatMap((b, i) =>
+            b.split(' ').map((word, wi) => (
+              <span
+                key={`${i}-${wi}`}
+                className="bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 px-3 py-1 rounded text-lg font-bold"
+              >
+                {word}
+              </span>
+            ))
+          )}
+        </div>
+      )}
+      {question.type === 'fill' && question.fullText && (
+        <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-2">
+          <FullTextDisplay text={question.fullText} />
+        </p>
+      )}
+      {question.type === 'compose' && question.answer && (
+        <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">{question.answer}</p>
+      )}
+    </div>
+  );
+}
+
+function HistoryView({
+  entries,
+  idx,
+  onNavigate,
+  onClose,
+}: {
+  entries: SessionEntry[];
+  idx: number;
+  onNavigate: (i: number) => void;
+  onClose: () => void;
+}) {
+  const entry = entries[idx];
+  const { question, result } = entry;
+  const verbHints = extractVerbHints(question.exp ?? '');
+  const jaLen = question.ja.length;
+  const questionTextSize = jaLen < 18 ? 'text-3xl' : jaLen < 30 ? 'text-2xl' : 'text-xl';
+
+  return (
+    <div className="min-h-dvh flex flex-col max-w-lg mx-auto">
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 py-3 border-b border-zinc-100 dark:border-zinc-900 bg-zinc-50 dark:bg-zinc-900/60">
+        <button
+          onClick={onClose}
+          className="text-sm font-medium text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors"
+        >
+          ← 現在の問題へ
+        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => onNavigate(idx - 1)}
+            disabled={idx === 0}
+            className="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 disabled:opacity-30 transition-colors text-lg px-1"
+          >
+            ‹
+          </button>
+          <span className="text-xs text-zinc-400 tabular-nums">{idx + 1} / {entries.length}</span>
+          <button
+            onClick={() => onNavigate(idx + 1)}
+            disabled={idx === entries.length - 1}
+            className="text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 disabled:opacity-30 transition-colors text-lg px-1"
+          >
+            ›
+          </button>
+        </div>
+        <span className="flex items-center gap-1.5 text-xs text-zinc-400 dark:text-zinc-500">
+          <span>{question.chapter} L{question.lesson}</span>
+        </span>
+      </div>
+
+      {/* Result badge */}
+      <div className="px-5 pt-4">
+        <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded ${
+          result === 'correct'
+            ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400'
+            : result === 'wrong'
+            ? 'bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-400'
+            : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500'
+        }`}>
+          {result === 'correct' ? '○ 正解' : result === 'wrong' ? '× 不正解' : 'スキップ'}
+        </span>
+      </div>
+
+      {/* Question */}
+      <div className="flex-1 flex flex-col px-5 pt-4 pb-4 space-y-4">
+        <p className={`${questionTextSize} font-bold leading-snug text-zinc-900 dark:text-zinc-100`}>
+          {question.ja}
+        </p>
+
+        {/* Verb hints */}
+        {verbHints.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {verbHints.map((v, i) => (
+              <span
+                key={i}
+                className="px-2.5 py-1 rounded border border-zinc-200 dark:border-zinc-700 text-sm font-semibold text-zinc-700 dark:text-zinc-300 font-mono"
+              >
+                {v}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* Fill sentence (if applicable) */}
+        {question.type === 'fill' && question.spanish && (
+          <div className="px-4 py-3 border border-zinc-200 dark:border-zinc-800 rounded-lg">
+            <p className="text-xs text-zinc-400 mb-2 font-medium">空欄</p>
+            <p className="leading-loose">
+              <FillSentence spanish={question.spanish} blanks={question.blanks ?? []} />
+            </p>
+          </div>
+        )}
+
+        {/* Answer */}
+        <AnswerBlock question={question} />
+
+        {/* Explanation */}
+        {question.exp && (
+          <div className="px-4 py-3 border border-zinc-100 dark:border-zinc-800 rounded-lg bg-zinc-50 dark:bg-zinc-900/60">
+            <p className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-1.5">解説</p>
+            <div className="exp-content text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed" dangerouslySetInnerHTML={{ __html: question.exp }} />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 interface Props {
   question: Question;
   sessionIndex: number;
@@ -49,15 +186,28 @@ interface Props {
   showHint: boolean;
   verbHintAlwaysOpen: boolean;
   lastResult: 'correct' | 'wrong' | 'skip' | null;
+  sessionHistory: SessionEntry[];
 }
 
-export default function QuizScreen({ question, sessionIndex, sessionTotal, onResult, onHome, showHint, verbHintAlwaysOpen, lastResult }: Props) {
+export default function QuizScreen({ question, sessionIndex, sessionTotal, onResult, onHome, showHint, verbHintAlwaysOpen, lastResult, sessionHistory }: Props) {
   const [revealed, setReveal] = useState(false);
   const verbHints = extractVerbHints(question.exp ?? '');
   const [verbHintOpen, setVerbHintOpen] = useState(verbHintAlwaysOpen && verbHints.length > 0);
+  const [historyIdx, setHistoryIdx] = useState<number | null>(null);
   const progress = sessionTotal > 0 ? sessionIndex / sessionTotal : 0;
   const jaLen = question.ja.length;
   const questionTextSize = jaLen < 18 ? 'text-3xl' : jaLen < 30 ? 'text-2xl' : 'text-xl';
+
+  if (historyIdx !== null && sessionHistory.length > 0) {
+    return (
+      <HistoryView
+        entries={sessionHistory}
+        idx={historyIdx}
+        onNavigate={setHistoryIdx}
+        onClose={() => setHistoryIdx(null)}
+      />
+    );
+  }
 
   return (
     <div className="min-h-dvh flex flex-col max-w-lg mx-auto">
@@ -79,6 +229,14 @@ export default function QuizScreen({ question, sessionIndex, sessionTotal, onRes
         </button>
         <span className="text-xs text-zinc-400 tabular-nums">{sessionIndex} / {sessionTotal === 0 ? '∞' : sessionTotal}</span>
         <span className="flex items-center gap-1.5 text-xs text-zinc-400 dark:text-zinc-500">
+          {sessionHistory.length > 0 && (
+            <button
+              onClick={() => setHistoryIdx(sessionHistory.length - 1)}
+              className="border border-zinc-200 dark:border-zinc-700 px-1.5 py-0.5 rounded text-[11px] hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
+            >
+              履歴 {sessionHistory.length}
+            </button>
+          )}
           <span>{question.chapter} L{question.lesson}</span>
           {question.theme && (
             <span className="border border-zinc-200 dark:border-zinc-700 px-1.5 py-0.5 rounded text-[11px]">
@@ -155,30 +313,7 @@ export default function QuizScreen({ question, sessionIndex, sessionTotal, onRes
         ) : (
           <>
             {/* Answer block */}
-            <div className="px-4 py-3 border border-zinc-200 dark:border-zinc-800 rounded-lg">
-              {question.type === 'fill' && question.blanks && (
-                <div className="flex flex-wrap gap-2 mb-2">
-                  {question.blanks.flatMap((b, i) =>
-                    b.split(' ').map((word, wi) => (
-                      <span
-                        key={`${i}-${wi}`}
-                        className="bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 px-3 py-1 rounded text-lg font-bold"
-                      >
-                        {word}
-                      </span>
-                    ))
-                  )}
-                </div>
-              )}
-              {question.type === 'fill' && question.fullText && (
-                <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-2">
-                  <FullTextDisplay text={question.fullText} />
-                </p>
-              )}
-              {question.type === 'compose' && question.answer && (
-                <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">{question.answer}</p>
-              )}
-            </div>
+            <AnswerBlock question={question} />
 
             {/* Explanation */}
             {question.exp && (
