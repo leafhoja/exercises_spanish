@@ -21,11 +21,20 @@ export default function App() {
   const recentIds = useRef<string[]>([]);
   const pool = useRef<Question[]>(ALL_QUESTIONS);
   const [showHint, setShowHint] = useState(() => localStorage.getItem('spanish_show_hint') !== 'false');
+  const [verbHintAlwaysOpen, setVerbHintAlwaysOpen] = useState(() => localStorage.getItem('spanish_verb_hint_always_open') !== 'false');
 
   function toggleHint() {
     setShowHint(h => {
       const next = !h;
       localStorage.setItem('spanish_show_hint', String(next));
+      return next;
+    });
+  }
+
+  function toggleVerbHintAlwaysOpen() {
+    setVerbHintAlwaysOpen(v => {
+      const next = !v;
+      localStorage.setItem('spanish_verb_hint_always_open', String(next));
       return next;
     });
   }
@@ -92,6 +101,8 @@ export default function App() {
         onStats={() => setScreen('stats')}
         showHint={showHint}
         onToggleHint={toggleHint}
+        verbHintAlwaysOpen={verbHintAlwaysOpen}
+        onToggleVerbHintAlwaysOpen={toggleVerbHintAlwaysOpen}
       />
     );
   }
@@ -114,6 +125,7 @@ export default function App() {
         sessionTotal={sessionTotal}
         onResult={handleResult}
         showHint={showHint}
+        verbHintAlwaysOpen={verbHintAlwaysOpen}
       />
     );
   }

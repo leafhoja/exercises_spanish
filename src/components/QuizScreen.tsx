@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { Question } from '../types';
+import { extractVerbHints } from '../lib/parseExp';
 
 interface Props {
   question: Question;
@@ -7,10 +8,13 @@ interface Props {
   sessionTotal: number;
   onResult: (result: 'correct' | 'wrong' | 'skip') => void;
   showHint: boolean;
+  verbHintAlwaysOpen: boolean;
 }
 
-export default function QuizScreen({ question, sessionIndex, sessionTotal, onResult, showHint }: Props) {
+export default function QuizScreen({ question, sessionIndex, sessionTotal, onResult, showHint, verbHintAlwaysOpen }: Props) {
   const [revealed, setReveal] = useState(false);
+  const verbHints = extractVerbHints(question.exp ?? '');
+  const [verbHintOpen, setVerbHintOpen] = useState(verbHintAlwaysOpen && verbHints.length > 0);
   const progress = sessionIndex / Math.max(sessionTotal, 1);
   const jaLen = question.ja.length;
   const questionTextSize = jaLen < 18 ? 'text-3xl' : jaLen < 30 ? 'text-2xl' : 'text-xl';
@@ -48,6 +52,31 @@ export default function QuizScreen({ question, sessionIndex, sessionTotal, onRes
         <p className={`${questionTextSize} font-bold leading-snug text-zinc-900 dark:text-zinc-100 mb-8`}>
           {question.ja}
         </p>
+
+        {/* Verb hint (collapsible) */}
+        {verbHints.length > 0 && !revealed && (
+          <div className="mb-4">
+            <button
+              onClick={() => setVerbHintOpen(o => !o)}
+              className="flex items-center gap-1.5 text-xs text-zinc-400 dark:text-zinc-600 hover:text-zinc-600 dark:hover:text-zinc-400 transition-colors"
+            >
+              <span>{verbHintOpen ? '▾' : '▸'}</span>
+              <span>動詞ヒント</span>
+            </button>
+            {verbHintOpen && (
+              <div className="mt-2 flex flex-wrap gap-2">
+                {verbHints.map((v, i) => (
+                  <span
+                    key={i}
+                    className="px-2.5 py-1 rounded border border-zinc-200 dark:border-zinc-700 text-sm font-semibold text-zinc-700 dark:text-zinc-300 font-mono"
+                  >
+                    {v}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Fill: Spanish sentence with blanks */}
         {question.type === 'fill' && question.spanish && showHint && !revealed && (

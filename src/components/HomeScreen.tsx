@@ -8,6 +8,8 @@ interface Props {
   onStats: () => void;
   showHint: boolean;
   onToggleHint: () => void;
+  verbHintAlwaysOpen: boolean;
+  onToggleVerbHintAlwaysOpen: () => void;
 }
 
 const CHAPTER_LESSONS: Record<string, number[]> = {
@@ -15,7 +17,7 @@ const CHAPTER_LESSONS: Record<string, number[]> = {
   '2列': [1, 2, 3, 4, 5, 6],
 };
 
-export default function HomeScreen({ questions, onStart, onStats, showHint, onToggleHint }: Props) {
+export default function HomeScreen({ questions, onStart, onStats, showHint, onToggleHint, verbHintAlwaysOpen, onToggleVerbHintAlwaysOpen }: Props) {
   const [mode, setMode] = useState<'adaptive' | 'chapter' | 'theme'>('adaptive');
   const [selectedChapter, setSelectedChapter] = useState<string>('');
   const [selectedLesson, setSelectedLesson] = useState<number | null>(null);
@@ -190,9 +192,9 @@ export default function HomeScreen({ questions, onStart, onStats, showHint, onTo
         </div>
       )}
 
-      {/* Start button + hint toggle */}
+      {/* Start button + hint toggles */}
       <div className="mt-auto px-5 pb-8 pt-4">
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between mb-2">
           <span className="text-sm text-zinc-500 dark:text-zinc-400">穴埋めヒント</span>
           <button
             onClick={onToggleHint}
@@ -203,6 +205,19 @@ export default function HomeScreen({ questions, onStart, onStats, showHint, onTo
             }`}
           >
             {showHint ? 'あり' : 'なし'}
+          </button>
+        </div>
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-sm text-zinc-500 dark:text-zinc-400">動詞ヒント（初期表示）</span>
+          <button
+            onClick={onToggleVerbHintAlwaysOpen}
+            className={`text-xs font-semibold px-3 py-1.5 rounded-full transition-colors ${
+              verbHintAlwaysOpen
+                ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900'
+                : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400'
+            }`}
+          >
+            {verbHintAlwaysOpen ? '常に表示' : '折りたたむ'}
           </button>
         </div>
         <button
