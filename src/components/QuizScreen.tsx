@@ -211,13 +211,38 @@ export default function QuizScreen({ question, sessionIndex, sessionTotal, onRes
 
   return (
     <div className="min-h-dvh flex flex-col max-w-lg mx-auto">
-      {/* Progress bar */}
-      <div className="h-1 bg-zinc-100 dark:bg-zinc-900 w-full">
+      {/* Progress bar - tap to review history */}
+      {sessionTotal > 0 ? (
+        <div className="flex w-full" style={{ gap: '1px' }}>
+          {Array.from({ length: sessionTotal }).map((_, i) => {
+            const entry = sessionHistory[i];
+            const color = !entry
+              ? 'bg-zinc-100 dark:bg-zinc-800'
+              : entry.result === 'correct'
+              ? 'bg-emerald-500'
+              : entry.result === 'wrong'
+              ? 'bg-rose-500'
+              : 'bg-zinc-300 dark:bg-zinc-600';
+            return (
+              <div
+                key={i}
+                className={`flex-1 h-1.5 py-2 box-content transition-colors duration-300 ${color} ${entry ? 'cursor-pointer active:opacity-60' : ''}`}
+                onClick={entry ? () => setHistoryIdx(i) : undefined}
+              />
+            );
+          })}
+        </div>
+      ) : (
         <div
-          className={`h-full transition-all duration-500 ${lastResult === 'correct' ? 'bg-blue-500' : 'bg-red-500'}`}
-          style={{ width: `${progress * 100}%` }}
-        />
-      </div>
+          className={`h-1.5 py-2 box-content bg-zinc-100 dark:bg-zinc-900 w-full ${sessionHistory.length > 0 ? 'cursor-pointer' : ''}`}
+          onClick={sessionHistory.length > 0 ? () => setHistoryIdx(sessionHistory.length - 1) : undefined}
+        >
+          <div
+            className={`h-1.5 transition-all duration-500 ${lastResult === 'correct' ? 'bg-emerald-500' : 'bg-rose-500'}`}
+            style={{ width: `${progress * 100}%` }}
+          />
+        </div>
+      )}
 
       {/* Meta row */}
       <div className="flex items-center justify-between px-5 py-3 border-b border-zinc-100 dark:border-zinc-900">
@@ -229,14 +254,6 @@ export default function QuizScreen({ question, sessionIndex, sessionTotal, onRes
         </button>
         <span className="text-xs text-zinc-400 tabular-nums">{sessionIndex} / {sessionTotal === 0 ? '∞' : sessionTotal}</span>
         <span className="flex items-center gap-1.5 text-xs text-zinc-400 dark:text-zinc-500">
-          {sessionHistory.length > 0 && (
-            <button
-              onClick={() => setHistoryIdx(sessionHistory.length - 1)}
-              className="border border-zinc-200 dark:border-zinc-700 px-1.5 py-0.5 rounded text-[11px] hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
-            >
-              履歴 {sessionHistory.length}
-            </button>
-          )}
           <span>{question.chapter} L{question.lesson}</span>
           {question.theme && (
             <span className="border border-zinc-200 dark:border-zinc-700 px-1.5 py-0.5 rounded text-[11px]">
@@ -341,7 +358,15 @@ export default function QuizScreen({ question, sessionIndex, sessionTotal, onRes
           </>
         )}
 
-        <div className="text-center pt-1">
+        <div className={`flex pt-1 gap-2 ${sessionHistory.length > 0 ? 'justify-between' : 'justify-center'}`}>
+          {sessionHistory.length > 0 && (
+            <button
+              onClick={() => setHistoryIdx(sessionHistory.length - 1)}
+              className="text-sm text-zinc-500 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700 px-4 py-2 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
+            >
+              ← 前の問題
+            </button>
+          )}
           <button
             onClick={() => onResult('skip')}
             className="text-sm text-zinc-500 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700 px-6 py-2 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
