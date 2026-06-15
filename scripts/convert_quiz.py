@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-Convert quiz-data.js and quiz-predicted.js to questions.json
+Convert quiz-data.js / quiz-predicted-s1.js / quiz-predicted-s2.js to questions.json
 """
 import re
 import json
 import os
 
-SRC_DIR = os.path.join(os.path.dirname(__file__), '../../スペイン語')
+SRC_DIR = os.environ.get('QUIZ_SRC_DIR') or os.path.join(os.path.dirname(__file__), '../../スペイン語')
 OUT_PATH = os.path.join(os.path.dirname(__file__), '../src/data/questions.json')
 
 PAGE_RE = re.compile(r"Spanish(\d)_lesson(\d+)\.html")
@@ -263,7 +263,8 @@ def main():
 
     files = [
         (os.path.join(SRC_DIR, 'quiz-data.js'), False),
-        (os.path.join(SRC_DIR, 'quiz-predicted.js'), True),
+        (os.path.join(SRC_DIR, 'quiz-predicted-s1.js'), True),
+        (os.path.join(SRC_DIR, 'quiz-predicted-s2.js'), True),
     ]
 
     for js_path, is_predicted in files:

@@ -3,6 +3,9 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: '0 3 * * *'
 
 permissions:
   contents: read
@@ -15,11 +18,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/checkout@v4
+        with:
+          repository: leafhoja/leafhoja.github.io
+          path: スペイン語
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
 
       - run: npm ci
+
+      - run: python3 scripts/convert_quiz.py
+        env:
+          QUIZ_SRC_DIR: スペイン語
 
       - run: npm run build
 
