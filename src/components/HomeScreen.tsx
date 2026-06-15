@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { Question, QuizFilter } from '../types';
-import { getTodayStats, getAllHistory } from '../lib/storage';
+import { getTodayStats, getAllHistory, loadLastFilter, saveLastFilter } from '../lib/storage';
 
 interface Props {
   questions: Question[];
@@ -20,11 +20,12 @@ const CHAPTER_LESSONS: Record<string, number[]> = {
 const COUNT_OPTIONS = [10, 20, 30, 50, 0] as const;
 
 export default function HomeScreen({ questions, onStart, onStats, showHint, onToggleHint, verbHintAlwaysOpen, onToggleVerbHintAlwaysOpen }: Props) {
-  const [mode, setMode] = useState<'adaptive' | 'chapter' | 'theme'>('chapter');
-  const [selectedChapter, setSelectedChapter] = useState<string>('');
-  const [selectedLesson, setSelectedLesson] = useState<number | null>(null);
-  const [selectedTheme, setSelectedTheme] = useState<string>('');
-  const [questionCount, setQuestionCount] = useState<number>(20);
+  const last = loadLastFilter();
+  const [mode, setMode] = useState<'adaptive' | 'chapter' | 'theme'>(last?.mode ?? 'chapter');
+  const [selectedChapter, setSelectedChapter] = useState<string>(last?.selectedChapter ?? '');
+  const [selectedLesson, setSelectedLesson] = useState<number | null>(last?.selectedLesson ?? null);
+  const [selectedTheme, setSelectedTheme] = useState<string>(last?.selectedTheme ?? '');
+  const [questionCount, setQuestionCount] = useState<number>(last?.questionCount ?? 20);
 
   const today = getTodayStats();
   const history = getAllHistory();
@@ -47,6 +48,7 @@ export default function HomeScreen({ questions, onStart, onStats, showHint, onTo
       if (!selectedTheme) return;
       filter.theme = selectedTheme;
     }
+    saveLastFilter({ mode, selectedChapter, selectedLesson, selectedTheme, questionCount });
     onStart(filter);
   }
 

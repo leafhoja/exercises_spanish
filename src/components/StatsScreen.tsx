@@ -1,15 +1,36 @@
 import { useState } from 'react';
-import type { Question } from '../types';
-import { getAllHistory, getLast7Sessions, resetData } from '../lib/storage';
+import type { Question, SessionLog } from '../types';
+import { getAllHistory, getLast7Sessions, getSessionLogs, resetData } from '../lib/storage';
 
 interface Props {
   questions: Question[];
   onHome: () => void;
 }
 
+function describeFilter(log: SessionLog): string {
+  const f = log.filter;
+  if (f.mode === 'adaptive') return 'おまかせ';
+  if (f.mode === 'theme') return `テーマ: ${f.theme ?? ''}`;
+  if (f.mode === 'chapter') {
+    const lesson = f.lesson != null ? ` L${f.lesson}` : '';
+    return `${f.chapter ?? ''}${lesson}`;
+  }
+  return '';
+}
+
+function formatDateTime(ts: number): string {
+  const d = new Date(ts);
+  const month = d.getMonth() + 1;
+  const day = d.getDate();
+  const hh = String(d.getHours()).padStart(2, '0');
+  const mm = String(d.getMinutes()).padStart(2, '0');
+  return `${month}/${day} ${hh}:${mm}`;
+}
+
 export default function StatsScreen({ questions, onHome }: Props) {
   const history = getAllHistory();
   const sessions = getLast7Sessions();
+  const sessionLogs = getSessionLogs();
   const [expandedKey, setExpandedKey] = useState<string | null>(null);
 
   const attempted = questions.filter((q) => history[q.id]?.totalAttempts > 0);
@@ -225,6 +246,41 @@ export default function StatsScreen({ questions, onHome }: Props) {
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* Session log */}
+          <div>
+            <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-2">学習記録</p>
+            {sessionLogs.length === 0 ? (
+              <div className="text-sm text-zinc-300 dark:text-zinc-700 py-2">記録なし</div>
+            ) : (
+              <div className="border-t border-zinc-100 dark:border-zinc-900">
+                {sessionLogs.slice(0, 30).map((log) => {
+                  const rate = log.total > 0 ? Math.round((log.correct / log.total) * 100) : null;
+                  return (
+                    <div key={log.id} className="flex items-center gap-3 py-2.5 border-b border-zinc-100 dark:border-zinc-900">
+                      <div className="shrink-0 text-xs tabular-nums text-zinc-400 w-16">{formatDateTime(log.startedAt)}</div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium text-zinc-700 dark:text-zinc-300 truncate">{describeFilter(log)}</div>
+                        <div className="text-xs text-zinc-400">{log.total}問</div>
+                      </div>
+                      <div className="shrink-0 text-right">
+                        {rate !== null ? (
+                          <>
+                            <div className={`text-sm font-bold tabular-nums ${
+                              rate >= 70 ? 'text-emerald-600 dark:text-emerald-500' : 'text-amber-600 dark:text-amber-500'
+                            }`}>{rate}%</div>
+                            <div className="text-xs text-zinc-400 tabular-nums">{log.correct}/{log.total}</div>
+                          </>
+                        ) : (
+                          <div className="text-xs text-zinc-300 dark:text-zinc-700">—</div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           {/* Worst 10 */}

@@ -182,13 +182,14 @@ interface Props {
   sessionTotal: number;
   onResult: (result: 'correct' | 'wrong' | 'skip') => void;
   onHome: () => void;
+  onStop: () => void;
   showHint: boolean;
   verbHintAlwaysOpen: boolean;
   lastResult: 'correct' | 'wrong' | 'skip' | null;
   sessionHistory: SessionEntry[];
 }
 
-export default function QuizScreen({ question, sessionIndex, sessionTotal, onResult, onHome, showHint, verbHintAlwaysOpen, lastResult, sessionHistory }: Props) {
+export default function QuizScreen({ question, sessionIndex, sessionTotal, onResult, onHome, onStop, showHint, verbHintAlwaysOpen, lastResult, sessionHistory }: Props) {
   const [revealed, setReveal] = useState(false);
   const verbHints = extractVerbHints(question.exp ?? '');
   const [verbHintOpen, setVerbHintOpen] = useState(verbHintAlwaysOpen && verbHints.length > 0);
@@ -373,6 +374,16 @@ export default function QuizScreen({ question, sessionIndex, sessionTotal, onRes
             スキップ
           </button>
         </div>
+        {sessionHistory.length > 0 && (
+          <div className="flex justify-center pt-1">
+            <button
+              onClick={onStop}
+              className="text-sm text-rose-400 dark:text-rose-500 hover:text-rose-600 dark:hover:text-rose-300 transition-colors px-4 py-2"
+            >
+              途中終了して結果を見る
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

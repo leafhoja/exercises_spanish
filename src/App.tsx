@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef } from 'react';
 import type { Question, QuizFilter, SessionEntry } from './types';
 import { selectNext, filterPool } from './lib/adaptive';
-import { getAllHistory, recordResult } from './lib/storage';
+import { getAllHistory, recordResult, recordSession } from './lib/storage';
 import HomeScreen from './components/HomeScreen';
 import QuizScreen from './components/QuizScreen';
 import StatsScreen from './components/StatsScreen';
@@ -20,6 +20,8 @@ export default function App() {
   const [sessionTotal, setSessionTotal] = useState(20);
   const recentIds = useRef<string[]>([]);
   const pool = useRef<Question[]>(ALL_QUESTIONS);
+  const currentFilter = useRef<QuizFilter>({ mode: 'adaptive' });
+  const sessionStartedAt = useRef<number>(0);
   const [showHint, setShowHint] = useState(() => localStorage.getItem('spanish_show_hint') !== 'false');
   const [verbHintAlwaysOpen, setVerbHintAlwaysOpen] = useState(() => localStorage.getItem('spanish_verb_hint_always_open') !== 'false');
   const [lastResult, setLastResult] = useState<'correct' | 'wrong' | 'skip' | null>(null);
@@ -44,6 +46,8 @@ export default function App() {
   const startQuiz = useCallback((f: QuizFilter) => {
     recentIds.current = [];
     setSessionHistory([]);
+    currentFilter.current = f;
+    sessionStartedAt.current = Date.now();
 
     let filtered = ALL_QUESTIONS;
     if (f.mode === 'chapter') {
@@ -88,6 +92,9 @@ export default function App() {
     const newIndex = sessionIndex + 1;
     setSessionIndex(newIndex);
     if (sessionTotal > 0 && newIndex >= sessionTotal) {
+      const answered = [...sessionHistory, { question: currentQuestion, result }];
+      const correct = answered.filter((e) => e.result === 'correct').length;
+      recordSession(currentFilter.current, answered.length, correct, sessionStartedAt.current);
       setScreen('result');
       return;
     }
@@ -126,6 +133,13 @@ export default function App() {
     );
   }
 
+  function handleStop() {
+    const answered = sessionHistory.filter(e => e.result !== 'skip');
+    const correct = answered.filter(e => e.result === 'correct').length;
+    recordSession(currentFilter.current, answered.length, correct, sessionStartedAt.current);
+    setScreen('result');
+  }
+
   if (screen === 'quiz' && currentQuestion) {
     return (
       <QuizScreen
@@ -135,6 +149,7 @@ export default function App() {
         sessionTotal={sessionTotal}
         onResult={handleResult}
         onHome={() => setScreen('home')}
+        onStop={handleStop}
         showHint={showHint}
         verbHintAlwaysOpen={verbHintAlwaysOpen}
         lastResult={lastResult}

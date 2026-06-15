@@ -35,6 +35,7 @@ export interface StorageData {
   version: number;
   history: Record<string, QuestionHistory>;
   sessions: DaySession[];
+  sessionLogs?: SessionLog[];
 }
 
 export type QuizMode = 'adaptive' | 'chapter' | 'theme';
@@ -47,7 +48,23 @@ export interface QuizFilter {
   count?: number; // 0 = unlimited
 }
 
+export interface LastFilterState {
+  mode: QuizMode;
+  selectedChapter: string;
+  selectedLesson: number | null;
+  selectedTheme: string;
+  questionCount: number;
+}
+
 export interface SessionEntry {
   question: Question;
   result: 'correct' | 'wrong' | 'skip';
+}
+
+export interface SessionLog {
+  id: string;
+  startedAt: number;
+  filter: QuizFilter;
+  total: number;
+  correct: number;
 }
