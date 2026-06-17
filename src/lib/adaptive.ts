@@ -63,12 +63,13 @@ export function selectNext(
 
 export function filterPool(
   questions: Question[],
-  filter: { chapter?: string; lesson?: number; theme?: string }
+  filter: { chapter?: string; lesson?: number; theme?: string; sources?: import('../types').QuestionSource[] }
 ): Question[] {
   return questions.filter((q) => {
     if (filter.chapter && q.chapter !== filter.chapter) return false;
     if (filter.lesson !== undefined && q.lesson !== filter.lesson) return false;
     if (filter.theme && q.theme !== filter.theme) return false;
+    if (filter.sources && filter.sources.length > 0 && !filter.sources.includes(q.source)) return false;
     return true;
   });
 }

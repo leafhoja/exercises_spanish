@@ -1,4 +1,5 @@
 export type QuestionType = 'fill' | 'compose';
+export type QuestionSource = 'quiz' | 'kakomon' | 'predicted';
 
 export interface Question {
   id: string;
@@ -7,7 +8,7 @@ export interface Question {
   theme: string;
   ja: string;
   type: QuestionType;
-  isPredicted: boolean;
+  source: QuestionSource;
   exp?: string;
   // fill type
   spanish?: string;
@@ -46,6 +47,7 @@ export interface QuizFilter {
   lesson?: number;
   theme?: string;
   count?: number; // 0 = unlimited
+  sources?: QuestionSource[]; // undefined = all
 }
 
 export interface LastFilterState {
@@ -54,6 +56,7 @@ export interface LastFilterState {
   selectedLesson: number | null;
   selectedTheme: string;
   questionCount: number;
+  selectedSources: QuestionSource[];
 }
 
 export interface SessionEntry {

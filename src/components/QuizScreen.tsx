@@ -260,9 +260,14 @@ export default function QuizScreen({ question, sessionIndex, sessionTotal, onRes
               {question.theme}
             </span>
           )}
-          {question.isPredicted && (
+          {question.source === 'predicted' && (
             <span className="border border-amber-300 dark:border-amber-800 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded text-[11px]">
               予想
+            </span>
+          )}
+          {question.source === 'kakomon' && (
+            <span className="border border-sky-300 dark:border-sky-800 text-sky-600 dark:text-sky-400 px-1.5 py-0.5 rounded text-[11px]">
+              過去問
             </span>
           )}
         </span>

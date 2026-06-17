@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 """
-Convert quiz-data.js / quiz-predicted-s1.js / quiz-predicted-s2.js to questions.json
+Convert quiz JS files to questions.json
+
+Sources:
+  quiz-data.js          → source: "quiz"      (小テスト)
+  quiz-kakomon.js       → source: "kakomon"   (過去問)
+  quiz-predicted-s1.js  → source: "predicted" (予想問題)
+  quiz-predicted-s2.js  → source: "predicted" (予想問題)
 """
 import re
 import json
@@ -13,7 +19,6 @@ PAGE_RE = re.compile(r"Spanish(\d)_lesson(\d+)\.html")
 
 
 def find_matching_brace(text, start, open_c='{', close_c='}'):
-    """Find the position of the closing brace matching the one at 'start'."""
     depth = 0
     in_string = False
     string_char = None
@@ -40,7 +45,6 @@ def find_matching_brace(text, start, open_c='{', close_c='}'):
 
 
 def extract_js_string(text, start):
-    """Extract a JS string value starting at start (quote char). Returns (value, end_pos)."""
     if start >= len(text) or text[start] not in ('"', "'"):
         return None, start
     quote = text[start]
@@ -67,8 +71,6 @@ def extract_js_string(text, start):
 
 
 def extract_objects_from_array(array_text):
-    """Given text of a JS array like [{...},{...}], return list of {...} substrings."""
-    # Strip outer [ ]
     text = array_text.strip()
     if text.startswith('['):
         text = text[1:]
@@ -91,9 +93,6 @@ def extract_objects_from_array(array_text):
 
 
 def get_field(obj_text, field):
-    """Get a string field value from a JS object text."""
-    # Match field: 'value' or field: "value"
-    # Must match field name as a whole word (after { or , or newline, or just word boundary)
     pattern = re.compile(rf'\b{re.escape(field)}\s*:\s*([\'"])', re.DOTALL)
     m = pattern.search(obj_text)
     if not m:
@@ -108,30 +107,23 @@ def get_bool_field(obj_text, field):
 
 
 def parse_fill(t_html):
-    """Parse fill-in HTML template → (blanks, spanish_display, full_text)"""
     blanks = re.findall(r'data-a="([^"]+)"', t_html)
-
-    # Build display text: replace each qz-b span with ___ (outer brackets stay)
     spanish = re.sub(r'<span class="qz-b" data-a="[^"]+"></span>', '___', t_html)
     spanish = re.sub(r'<span[^>]*class="qz-hint"[^>]*>.*?</span>', '', spanish)
     spanish = re.sub(r'<[^>]+>', '', spanish)
     spanish = re.sub(r'\s+', ' ', spanish).strip()
-
-    # Build full text with answers
     full = re.sub(r'<span class="qz-b" data-a="([^"]+)"></span>', r'(\1)', t_html)
     full = re.sub(r'<span[^>]*class="qz-hint"[^>]*>.*?</span>', '', full)
     full = re.sub(r'<[^>]+>', '', full)
     full = re.sub(r'\s+', ' ', full).strip()
-
     return blanks, spanish, full
 
 
-def make_id(series, lesson, idx):
-    return f"s{series}l{lesson}_{idx:03d}"
+def make_id(prefix, series, lesson, idx):
+    return f"{prefix}{series}l{lesson}_{idx:03d}"
 
 
-def parse_page_block(page_name, block_text, is_predicted_file):
-    """Parse a page block and return list of question dicts."""
+def parse_page_block(page_name, block_text, source, id_prefix='s'):
     m = PAGE_RE.match(page_name)
     if not m:
         return []
@@ -140,10 +132,11 @@ def parse_page_block(page_name, block_text, is_predicted_file):
     lesson = int(m.group(2))
     chapter = f"{series}列"
 
-    admin_only = get_bool_field(block_text, 'adminOnly')
-    is_predicted = is_predicted_file or admin_only
+    # For quiz source, adminOnly blocks become predicted
+    effective_source = source
+    if source == 'quiz' and get_bool_field(block_text, 'adminOnly'):
+        effective_source = 'predicted'
 
-    # Find sections array
     sm = re.search(r'\bsections\s*:\s*\[', block_text)
     if not sm:
         return []
@@ -165,7 +158,6 @@ def parse_page_block(page_name, block_text, is_predicted_file):
         if not theme:
             theme = '穴埋め' if series == '1' else '和文西訳'
 
-        # Find items array in this section
         im = re.search(r'\bitems\s*:\s*\[', sec_block)
         if not im:
             continue
@@ -188,12 +180,12 @@ def parse_page_block(page_name, block_text, is_predicted_file):
                 continue
 
             q = {
-                "id": make_id(series, lesson, idx),
+                "id": make_id(id_prefix, series, lesson, idx),
                 "chapter": chapter,
                 "lesson": lesson,
                 "theme": theme,
                 "ja": ja,
-                "isPredicted": is_predicted,
+                "source": effective_source,
             }
 
             if t:
@@ -217,11 +209,9 @@ def parse_page_block(page_name, block_text, is_predicted_file):
     return questions
 
 
-def extract_pages_from_main_object(content):
-    """Extract pages from: var QUIZ_DATA = { 'page': {...}, ... }"""
+def extract_pages_from_main_object(content, var_name='QUIZ_DATA'):
     pages = {}
-
-    m = re.search(r'var\s+QUIZ_DATA\s*=\s*\{', content)
+    m = re.search(rf'var\s+{re.escape(var_name)}\s*=\s*\{{', content)
     if not m:
         return pages
 
@@ -231,7 +221,6 @@ def extract_pages_from_main_object(content):
         return pages
 
     inner = content[main_start+1:main_end]
-
     pattern = re.compile(r"'(Spanish\d_lesson\d+\.html)'\s*:\s*\{")
     for pm in pattern.finditer(inner):
         page_name = pm.group(1)
@@ -243,10 +232,9 @@ def extract_pages_from_main_object(content):
     return pages
 
 
-def extract_pages_from_assignments(content):
-    """Extract pages from: QUIZ_DATA['page'] = {...};"""
+def extract_pages_from_assignments(content, var_name='QUIZ_DATA'):
     pages = {}
-    pattern = re.compile(r"QUIZ_DATA\['(Spanish\d_lesson\d+\.html)'\]\s*=\s*\{")
+    pattern = re.compile(rf"{re.escape(var_name)}\['(Spanish\d_lesson\d+\.html)'\]\s*=\s*\{{")
     for m in pattern.finditer(content):
         page_name = m.group(1)
         brace_pos = content.index('{', m.start())
@@ -261,32 +249,39 @@ def main():
 
     all_questions = []
 
+    # (js_path, source, var_name, id_prefix)
     files = [
-        (os.path.join(SRC_DIR, 'quiz-data.js'), False),
-        (os.path.join(SRC_DIR, 'quiz-predicted-s1.js'), True),
-        (os.path.join(SRC_DIR, 'quiz-predicted-s2.js'), True),
+        (os.path.join(SRC_DIR, 'quiz-data.js'),         'quiz',      'QUIZ_DATA',    's'),
+        (os.path.join(SRC_DIR, 'quiz-kakomon.js'),       'kakomon',   'QUIZ_KAKOMON', 'k'),
+        (os.path.join(SRC_DIR, 'quiz-predicted-s1.js'),  'predicted', 'QUIZ_DATA',    's'),
+        (os.path.join(SRC_DIR, 'quiz-predicted-s2.js'),  'predicted', 'QUIZ_DATA',    's'),
     ]
 
-    for js_path, is_predicted in files:
+    for js_path, source, var_name, id_prefix in files:
+        if not os.path.exists(js_path):
+            print(f"  SKIP (not found): {js_path}")
+            continue
         with open(js_path, encoding='utf-8') as f:
             content = f.read()
 
         pages = {}
-        pages.update(extract_pages_from_main_object(content))
-        pages.update(extract_pages_from_assignments(content))
+        pages.update(extract_pages_from_main_object(content, var_name))
+        pages.update(extract_pages_from_assignments(content, var_name))
 
+        label = {'quiz': '小テスト', 'kakomon': '過去問', 'predicted': '予想問題'}[source]
+        print(f"\n[{label}] {os.path.basename(js_path)}")
         for page_name in sorted(pages):
-            questions = parse_page_block(page_name, pages[page_name], is_predicted)
+            questions = parse_page_block(page_name, pages[page_name], source, id_prefix)
             all_questions.extend(questions)
             print(f"  {page_name}: {len(questions)} questions")
 
     print(f"\n総問題数: {len(all_questions)}")
-    by_chapter = {}
+    by_source = {}
     for q in all_questions:
-        key = f"{q['chapter']} L{q['lesson']}"
-        by_chapter[key] = by_chapter.get(key, 0) + 1
-    for k, v in sorted(by_chapter.items()):
-        print(f"  {k}: {v}問")
+        by_source[q['source']] = by_source.get(q['source'], 0) + 1
+    for k, v in sorted(by_source.items()):
+        label = {'quiz': '小テスト', 'kakomon': '過去問', 'predicted': '予想問題'}.get(k, k)
+        print(f"  {label}: {v}問")
 
     with open(OUT_PATH, 'w', encoding='utf-8') as f:
         json.dump({"questions": all_questions}, f, ensure_ascii=False, indent=2)

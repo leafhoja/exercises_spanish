@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { Question, QuizFilter } from '../types';
+import type { Question, QuizFilter, QuestionSource } from '../types';
 import { getTodayStats, getAllHistory, loadLastFilter, saveLastFilter } from '../lib/storage';
 
 interface Props {
@@ -19,6 +19,13 @@ const CHAPTER_LESSONS: Record<string, number[]> = {
 
 const COUNT_OPTIONS = [10, 20, 30, 50, 0] as const;
 
+const ALL_SOURCES: QuestionSource[] = ['quiz', 'kakomon', 'predicted'];
+const SOURCE_LABELS: Record<QuestionSource, string> = {
+  quiz: '小テスト',
+  kakomon: '過去問',
+  predicted: '予想問題',
+};
+
 export default function HomeScreen({ questions, onStart, onStats, showHint, onToggleHint, verbHintAlwaysOpen, onToggleVerbHintAlwaysOpen }: Props) {
   const last = loadLastFilter();
   const [mode, setMode] = useState<'adaptive' | 'chapter' | 'theme'>(last?.mode ?? 'chapter');
@@ -26,6 +33,9 @@ export default function HomeScreen({ questions, onStart, onStats, showHint, onTo
   const [selectedLesson, setSelectedLesson] = useState<number | null>(last?.selectedLesson ?? null);
   const [selectedTheme, setSelectedTheme] = useState<string>(last?.selectedTheme ?? '');
   const [questionCount, setQuestionCount] = useState<number>(last?.questionCount ?? 20);
+  const [selectedSources, setSelectedSources] = useState<QuestionSource[]>(
+    last?.selectedSources ?? ALL_SOURCES
+  );
 
   const today = getTodayStats();
   const history = getAllHistory();
@@ -38,8 +48,23 @@ export default function HomeScreen({ questions, onStart, onStats, showHint, onTo
     .sort((a, b) => b.rate - a.rate)
     .slice(0, 3);
 
+  function toggleSource(src: QuestionSource) {
+    setSelectedSources(prev => {
+      if (prev.includes(src)) {
+        // keep at least one selected
+        if (prev.length === 1) return prev;
+        return prev.filter(s => s !== src);
+      }
+      return [...prev, src];
+    });
+  }
+
   function handleStart() {
-    const filter: QuizFilter = { mode, count: questionCount };
+    const filter: QuizFilter = {
+      mode,
+      count: questionCount,
+      sources: selectedSources.length === ALL_SOURCES.length ? undefined : selectedSources,
+    };
     if (mode === 'chapter') {
       if (!selectedChapter) return;
       filter.chapter = selectedChapter;
@@ -48,7 +73,7 @@ export default function HomeScreen({ questions, onStart, onStats, showHint, onTo
       if (!selectedTheme) return;
       filter.theme = selectedTheme;
     }
-    saveLastFilter({ mode, selectedChapter, selectedLesson, selectedTheme, questionCount });
+    saveLastFilter({ mode, selectedChapter, selectedLesson, selectedTheme, questionCount, selectedSources });
     onStart(filter);
   }
 
@@ -201,6 +226,31 @@ export default function HomeScreen({ questions, onStart, onStats, showHint, onTo
             ))}
           </div>
         )}
+      </div>
+
+      {/* Source filter */}
+      <div className="px-5 pt-3 pb-2">
+        <div className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-3">問題種別</div>
+        <div className="flex gap-1.5">
+          {ALL_SOURCES.map((src) => {
+            const active = selectedSources.includes(src);
+            const count = questions.filter(q => q.source === src).length;
+            return (
+              <button
+                key={src}
+                onClick={() => toggleSource(src)}
+                className={`flex-1 py-2 rounded text-xs font-semibold transition-colors ${
+                  active
+                    ? 'bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900'
+                    : 'border border-zinc-300 dark:border-zinc-600 text-zinc-400 dark:text-zinc-500 hover:border-zinc-400 hover:bg-zinc-50 dark:hover:border-zinc-500 dark:hover:bg-zinc-800'
+                }`}
+              >
+                <div>{SOURCE_LABELS[src]}</div>
+                <div className={`text-[10px] mt-0.5 ${active ? 'opacity-70' : 'opacity-50'}`}>{count}問</div>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Start button + hint toggles */}

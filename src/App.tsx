@@ -54,9 +54,13 @@ export default function App() {
       filtered = filterPool(ALL_QUESTIONS, {
         chapter: f.chapter,
         lesson: f.lesson,
+        sources: f.sources,
       });
     } else if (f.mode === 'theme') {
-      filtered = filterPool(ALL_QUESTIONS, { theme: f.theme });
+      filtered = filterPool(ALL_QUESTIONS, { theme: f.theme, sources: f.sources });
+    } else {
+      // adaptive: apply source filter to the whole pool
+      filtered = filterPool(ALL_QUESTIONS, { sources: f.sources });
     }
 
     if (filtered.length === 0) {
